@@ -1,0 +1,48 @@
+goos: darwin
+goarch: amd64
+pkg: github.com/dkhrunov/dsa-go/search
+cpu: Intel(R) Core(TM) i5-1038NG7 CPU @ 2.00GHz
+BenchmarkSearch/LinearSearch-100-8         	21353313	        51.08 ns/op	       0 B/op	       0 allocs/op
+BenchmarkSearch/BinarySearch-100-8         	87708770	        13.80 ns/op	       0 B/op	       0 allocs/op
+BenchmarkSearch/LinearSearch-500-8         	 9122434	       132.4 ns/op	       0 B/op	       0 allocs/op
+BenchmarkSearch/BinarySearch-500-8         	57928208	        20.78 ns/op	       0 B/op	       0 allocs/op
+BenchmarkSearch/LinearSearch-1000-8        	 3188438	       377.9 ns/op	       0 B/op	       0 allocs/op
+BenchmarkSearch/BinarySearch-1000-8        	45638863	        26.80 ns/op	       0 B/op	       0 allocs/op
+BenchmarkSearch/LinearSearch-1500-8        	 3333370	       361.3 ns/op	       0 B/op	       0 allocs/op
+BenchmarkSearch/BinarySearch-1500-8        	43590477	        27.75 ns/op	       0 B/op	       0 allocs/op
+BenchmarkSearch/LinearSearch-2000-8        	 1537844	       813.2 ns/op	       0 B/op	       0 allocs/op
+BenchmarkSearch/BinarySearch-2000-8        	36501460	        35.62 ns/op	       0 B/op	       0 allocs/op
+BenchmarkSearch/LinearSearch-2500-8        	 4147507	       286.2 ns/op	       0 B/op	       0 allocs/op
+BenchmarkSearch/BinarySearch-2500-8        	38165674	        30.03 ns/op	       0 B/op	       0 allocs/op
+BenchmarkSearch/LinearSearch-3000-8        	 2881844	       438.2 ns/op	       0 B/op	       0 allocs/op
+BenchmarkSearch/BinarySearch-3000-8        	32662486	        36.85 ns/op	       0 B/op	       0 allocs/op
+BenchmarkSearch/LinearSearch-3500-8        	 1491746	       805.3 ns/op	       0 B/op	       0 allocs/op
+BenchmarkSearch/BinarySearch-3500-8        	37109677	        32.62 ns/op	       0 B/op	       0 allocs/op
+BenchmarkSearch/LinearSearch-4000-8        	 1380867	       882.0 ns/op	       0 B/op	       0 allocs/op
+BenchmarkSearch/BinarySearch-4000-8        	62249010	        16.14 ns/op	       0 B/op	       0 allocs/op
+BenchmarkSearch/LinearSearch-4500-8        	  851779	      1513 ns/op	       0 B/op	       0 allocs/op
+BenchmarkSearch/BinarySearch-4500-8        	34783816	        42.67 ns/op	       0 B/op	       0 allocs/op
+BenchmarkSearch/LinearSearch-5000-8        	 2716362	       429.7 ns/op	       0 B/op	       0 allocs/op
+BenchmarkSearch/BinarySearch-5000-8        	35219084	        34.55 ns/op	       0 B/op	       0 allocs/op
+BenchmarkSearch/LinearSearch-10000-8       	  312108	      3860 ns/op	       0 B/op	       0 allocs/op
+BenchmarkSearch/BinarySearch-10000-8       	29328000	        42.00 ns/op	       0 B/op	       0 allocs/op
+BenchmarkSearch/LinearSearch-15000-8       	  189895	      7220 ns/op	       0 B/op	       0 allocs/op
+BenchmarkSearch/BinarySearch-15000-8       	27763832	        39.67 ns/op	       0 B/op	       0 allocs/op
+BenchmarkSearch/LinearSearch-20000-8       	  131766	      9897 ns/op	       0 B/op	       0 allocs/op
+BenchmarkSearch/BinarySearch-20000-8       	29847061	        40.66 ns/op	       0 B/op	       0 allocs/op
+BenchmarkSearch/LinearSearch-25000-8       	  240277	      4950 ns/op	       0 B/op	       0 allocs/op
+BenchmarkSearch/BinarySearch-25000-8       	31894311	        35.74 ns/op	       0 B/op	       0 allocs/op
+BenchmarkSearch/LinearSearch-30000-8       	  388495	      2998 ns/op	       0 B/op	       0 allocs/op
+BenchmarkSearch/BinarySearch-30000-8       	28834609	        42.94 ns/op	       0 B/op	       0 allocs/op
+BenchmarkSearch/LinearSearch-35000-8       	   92866	     12562 ns/op	       0 B/op	       0 allocs/op
+BenchmarkSearch/BinarySearch-35000-8       	25389616	        44.70 ns/op	       0 B/op	       0 allocs/op
+BenchmarkSearch/LinearSearch-40000-8       	  101018	     15025 ns/op	       0 B/op	       0 allocs/op
+BenchmarkSearch/BinarySearch-40000-8       	23937708	        48.74 ns/op	       0 B/op	       0 allocs/op
+BenchmarkSearch/LinearSearch-45000-8       	   65382	     21473 ns/op	       0 B/op	       0 allocs/op
+BenchmarkSearch/BinarySearch-45000-8       	28331772	        45.46 ns/op	       0 B/op	       0 allocs/op
+BenchmarkSearch/LinearSearch-50000-8       	   56740	     27006 ns/op	       0 B/op	       0 allocs/op
+BenchmarkSearch/BinarySearch-50000-8       	28567248	        42.94 ns/op	       0 B/op	       0 allocs/op
+BenchmarkSearch/LinearSearch-100000-8      	   62512	     19231 ns/op	       0 B/op	       0 allocs/op
+BenchmarkSearch/BinarySearch-100000-8      	26392040	        47.59 ns/op	       0 B/op	       0 allocs/op
+PASS
+ok  	github.com/dkhrunov/dsa-go/search	58.697s
