@@ -12,11 +12,11 @@ func TestLessComparator(t *testing.T) {
 	tests := []struct {
 		name string
 		args args
-		want bool
+		want int8
 	}{
-		{"2 must be less than 5", args{2, 5}, true},
-		{"5 must not be less than 2", args{5, 2}, false},
-		{"10 must not be less than 10", args{10, 10}, false},
+		{"2 must be less than 5", args{2, 5}, 1},
+		{"5 must not be less than 2", args{5, 2}, -1},
+		{"10 must not be less than 10", args{10, 10}, 0},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
@@ -35,11 +35,11 @@ func TestGreaterComparator(t *testing.T) {
 	tests := []struct {
 		name string
 		args args
-		want bool
+		want int8
 	}{
-		{"5 must  be greater than 2", args{5, 2}, true},
-		{"2 must not be greater than 5", args{2, 5}, false},
-		{"10 must not be greater than 10", args{10, 10}, false},
+		{"5 must  be greater than 2", args{5, 2}, 1},
+		{"2 must not be greater than 5", args{2, 5}, -1},
+		{"10 must not be greater than 10", args{10, 10}, 0},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
