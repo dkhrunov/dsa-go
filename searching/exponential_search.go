@@ -8,6 +8,8 @@ import (
 // Time Complexity: O(Log N)
 //
 // Auxiliary Space: O(1)
+//
+// Documentation - https://www.geeksforgeeks.org/exponential-search/
 func ExponentialSearch[T constraints.Ordered](arr []T, item T) int {
 	if len(arr) == 0 {
 		return -1

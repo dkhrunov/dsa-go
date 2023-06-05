@@ -5,6 +5,8 @@ import "golang.org/x/exp/constraints"
 // Time Complexity: O(Log N)
 //
 // Auxiliary Space: O(1)
+//
+// Documentation - https://www.geeksforgeeks.org/binary-search/
 func BinarySearch[T constraints.Ordered](arr []T, item T) int {
 	left, right := 0, len(arr)-1
 
@@ -28,6 +30,8 @@ func BinarySearch[T constraints.Ordered](arr []T, item T) int {
 // Time Complexity: O(Log N)
 //
 // Auxiliary Space: O(N)
+//
+// Documentation - https://www.geeksforgeeks.org/binary-search/
 func BinarySearchRecursive[T constraints.Ordered](arr []T, item T) int {
 	return binarySearchRecursiveUtil(arr, item, 0, len(arr)-1)
 }

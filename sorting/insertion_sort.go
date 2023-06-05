@@ -8,6 +8,8 @@ import (
 // Time Complexity: O(N^2)
 //
 // Auxiliary Space: O(1)
+//
+// Documentation - https://www.geeksforgeeks.org/insertion-sort/
 func InsertionSort[T constraints.Ordered](arr []T, comp utils.ComparatorFn[T]) []T {
 	for i := 1; i < len(arr); i++ {
 		curr := arr[i]

@@ -3,6 +3,8 @@ package searching
 // Time Complexity: O(N)
 //
 // Auxiliary Space: O(1)
+//
+// Documentation - https://www.geeksforgeeks.org/improving-linear-search-technique/
 func LinearSearchTransposition[T comparable](arr []T, elem T) int {
 	found := LinearSearch(arr, elem)
 

@@ -10,6 +10,8 @@ import (
 // Time Complexity : O(√n)
 //
 // Auxiliary Space : O(1)
+//
+// Documentation - https://www.geeksforgeeks.org/jump-search/
 func JumpSearch[T constraints.Ordered](arr []T, item T) int {
 	n := len(arr)
 	step := int(math.Sqrt(float64(n)))
