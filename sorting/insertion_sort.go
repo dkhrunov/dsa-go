@@ -24,3 +24,17 @@ func InsertionSort[T constraints.Ordered](arr []T, comp utils.ComparatorFn[T]) [
 	}
 	return arr
 }
+
+// Time Complexity: O(N^2)
+//
+// Auxiliary Space: O(1)
+func InsertionSortAsc[T constraints.Ordered](arr []T) []T {
+	return InsertionSort(arr, utils.LessComparator[T])
+}
+
+// Time Complexity: O(N^2)
+//
+// Auxiliary Space: O(1)
+func InsertionSortDesc[T constraints.Ordered](arr []T) []T {
+	return InsertionSort(arr, utils.GreaterComparator[T])
+}

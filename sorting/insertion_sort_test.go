@@ -29,3 +29,21 @@ func TestInsertionSort(t *testing.T) {
 		})
 	}
 }
+
+func TestInsertionSortAsc(t *testing.T) {
+	arr := []int{4, 5, 2, 3, 8, 9, 7, 6, 1, 0}
+	want := []int{0, 1, 2, 3, 4, 5, 6, 7, 8, 9}
+
+	if got := InsertionSortAsc(arr); !reflect.DeepEqual(got, want) {
+		t.Errorf("Result was incorrect, got: %v, want: %v.", got, want)
+	}
+}
+
+func TestInsertionSortDesc(t *testing.T) {
+	arr := []int{4, 5, 2, 3, 8, 9, 7, 6, 1, 0}
+	want := []int{9, 8, 7, 6, 5, 4, 3, 2, 1, 0}
+
+	if got := InsertionSortDesc(arr); !reflect.DeepEqual(got, want) {
+		t.Errorf("Result was incorrect, got: %v, want: %v.", got, want)
+	}
+}

@@ -24,3 +24,17 @@ func BubbleSort[T constraints.Ordered](arr []T, comp utils.ComparatorFn[T]) []T 
 
 	return arr
 }
+
+// Time Complexity: O(N^2)
+//
+// Auxiliary Space: O(1)
+func BubbleSortAsc[T constraints.Ordered](arr []T) []T {
+	return BubbleSort(arr, utils.LessComparator[T])
+}
+
+// Time Complexity: O(N^2)
+//
+// Auxiliary Space: O(1)
+func BubbleSortDesc[T constraints.Ordered](arr []T) []T {
+	return BubbleSort(arr, utils.GreaterComparator[T])
+}
