@@ -1,8 +1,6 @@
 package sorting
 
 import (
-	"sync"
-
 	"github.com/dkhrunov/dsa-go/utils"
 	"golang.org/x/exp/constraints"
 )
@@ -20,22 +18,36 @@ func quickSort[T constraints.Ordered](arr []T, left, right int, comp utils.Compa
 	}
 }
 
-func QuickSortParallel[T constraints.Ordered](arr []T, comp utils.ComparatorFn[T]) []T {
-	var wg sync.WaitGroup
-	wg.Add(1)
-	quickSortParallel(arr, 0, len(arr)-1, comp, &wg)
-	wg.Wait()
+func QuickSortConcur[T constraints.Ordered](arr []T, comp utils.ComparatorFn[T]) []T {
+	done := make(chan struct{})
+	go quickSortConcur(arr, 0, len(arr)-1, comp, done, 5)
+	<-done
 	return arr
 }
 
-func quickSortParallel[T constraints.Ordered](arr []T, left, right int, comp utils.ComparatorFn[T], wg *sync.WaitGroup) {
-	defer wg.Done()
-	if left < right {
-		wg.Add(2)
-		pivotIdx := partition(arr, left, right, comp)
-		go quickSortParallel(arr, left, pivotIdx-1, comp, wg)
-		go quickSortParallel(arr, pivotIdx+1, right, comp, wg)
+func quickSortConcur[T constraints.Ordered](arr []T, left, right int, comp utils.ComparatorFn[T], done chan struct{}, depth int) {
+	if left >= right {
+		done <- struct{}{}
+		return
 	}
+
+	depth--
+
+	pivotIdx := partition(arr, left, right, comp)
+
+	if depth > 0 {
+		childDone := make(chan struct{}, 2)
+		go quickSortConcur(arr, left, pivotIdx-1, comp, childDone, depth)
+		go quickSortConcur(arr, pivotIdx+1, right, comp, childDone, depth)
+
+		<-childDone
+		<-childDone
+	} else {
+		quickSort(arr, left, pivotIdx-1, comp)
+		quickSort(arr, pivotIdx+1, right, comp)
+	}
+
+	done <- struct{}{}
 }
 
 func partition[T constraints.Ordered](arr []T, left, right int, comp utils.ComparatorFn[T]) int {

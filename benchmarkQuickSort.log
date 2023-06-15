@@ -2,27 +2,52 @@ goos: darwin
 goarch: amd64
 pkg: github.com/dkhrunov/dsa-go/sorting
 cpu: Intel(R) Core(TM) i5-1038NG7 CPU @ 2.00GHz
-BenchmarkQuickSort/QuickSort-100-8         	   60055	     20754 ns/op	       0 B/op	       0 allocs/op
-BenchmarkQuickSort/QuickSortParallel-100-8 	   11996	    105008 ns/op	   15858 B/op	     199 allocs/op
-BenchmarkQuickSort/QuickSort-500-8         	    2331	    530254 ns/op	       0 B/op	       0 allocs/op
-BenchmarkQuickSort/QuickSortParallel-500-8 	     990	   1197381 ns/op	   79856 B/op	     999 allocs/op
-BenchmarkQuickSort/QuickSort-1000-8        	     616	   1823973 ns/op	       0 B/op	       0 allocs/op
-BenchmarkQuickSort/QuickSortParallel-1000-8         	     373	   3399343 ns/op	  159872 B/op	    1999 allocs/op
-BenchmarkQuickSort/QuickSort-1500-8                 	     253	   4096803 ns/op	       0 B/op	       0 allocs/op
-BenchmarkQuickSort/QuickSortParallel-1500-8         	     181	   6626599 ns/op	  239856 B/op	    2999 allocs/op
-BenchmarkQuickSort/QuickSort-2000-8                 	     164	   7285628 ns/op	       0 B/op	       0 allocs/op
-BenchmarkQuickSort/QuickSortParallel-2000-8         	     100	  10948626 ns/op	  319856 B/op	    3999 allocs/op
-BenchmarkQuickSort/QuickSort-2500-8                 	     100	  11540182 ns/op	       0 B/op	       0 allocs/op
-BenchmarkQuickSort/QuickSortParallel-2500-8         	      72	  16149734 ns/op	  399856 B/op	    4999 allocs/op
-BenchmarkQuickSort/QuickSort-3000-8                 	     100	  16414629 ns/op	       0 B/op	       0 allocs/op
-BenchmarkQuickSort/QuickSortParallel-3000-8         	      54	  22487547 ns/op	  479856 B/op	    5999 allocs/op
-BenchmarkQuickSort/QuickSort-3500-8                 	     100	  25960077 ns/op	       0 B/op	       0 allocs/op
-BenchmarkQuickSort/QuickSortParallel-3500-8         	      34	  31809655 ns/op	  559856 B/op	    6999 allocs/op
-BenchmarkQuickSort/QuickSort-4000-8                 	     100	  29348641 ns/op	       0 B/op	       0 allocs/op
-BenchmarkQuickSort/QuickSortParallel-4000-8         	      31	  40557370 ns/op	  639856 B/op	    7999 allocs/op
-BenchmarkQuickSort/QuickSort-4500-8                 	     100	  40864314 ns/op	       0 B/op	       0 allocs/op
-BenchmarkQuickSort/QuickSortParallel-4500-8         	      25	  47163690 ns/op	  719856 B/op	    8999 allocs/op
-BenchmarkQuickSort/QuickSort-5000-8                 	     100	  47620417 ns/op	       0 B/op	       0 allocs/op
-BenchmarkQuickSort/QuickSortParallel-5000-8         	      21	  56355836 ns/op	  799856 B/op	    9999 allocs/op
-PASS
-ok  	github.com/dkhrunov/dsa-go/sorting	40.284s
+BenchmarkQuickSort/QuickSort-100-8         	   44726	     26371 ns/op	       0 B/op	       0 allocs/op
+fatal error: all goroutines are asleep - deadlock!
+
+goroutine 1 [chan receive]:
+testing.(*B).run1(0xc000132000)
+	/usr/local/go/src/testing/benchmark.go:235 +0xb2
+testing.(*B).Run(0xc000132240, {0x113078c?, 0x648b8088?}, 0x1138d50)
+	/usr/local/go/src/testing/benchmark.go:676 +0x445
+testing.runBenchmarks.func1(0xc000132240?)
+	/usr/local/go/src/testing/benchmark.go:550 +0x6e
+testing.(*B).runN(0xc000132240, 0x1)
+	/usr/local/go/src/testing/benchmark.go:193 +0x102
+testing.runBenchmarks({0x1134af7, 0x22}, 0x1248520?, {0x1210ec0, 0x1, 0x40?})
+	/usr/local/go/src/testing/benchmark.go:559 +0x418
+testing.(*M).Run(0xc000000140)
+	/usr/local/go/src/testing/testing.go:1733 +0x811
+main.main()
+	_testmain.go:69 +0x1aa
+
+goroutine 8 [chan receive]:
+testing.(*B).run1(0xc0001326c0)
+	/usr/local/go/src/testing/benchmark.go:235 +0xb2
+testing.(*B).Run(0xc000132000, {0xc00001a0f0?, 0xc000121ef0?}, 0xc00012a060)
+	/usr/local/go/src/testing/benchmark.go:676 +0x445
+github.com/dkhrunov/dsa-go/sorting.BenchmarkQuickSort(0xc000132000?)
+	/Users/denishrunov/Programming/go/dsa-go/sorting/quick_sort_benchmark_test.go:26 +0x148
+testing.(*B).runN(0xc000132000, 0x1)
+	/usr/local/go/src/testing/benchmark.go:193 +0x102
+testing.(*B).run1.func1()
+	/usr/local/go/src/testing/benchmark.go:233 +0x59
+created by testing.(*B).run1
+	/usr/local/go/src/testing/benchmark.go:226 +0x9c
+
+goroutine 9 [chan send]:
+github.com/dkhrunov/dsa-go/sorting.quickSortConcur[...]({0xc00018e000, 0x64?, 0x64}, 0x0, 0x63, 0x1138d48, 0x103a0b8)
+	/Users/denishrunov/Programming/go/dsa-go/sorting/quick_sort.go:42 +0x235
+github.com/dkhrunov/dsa-go/sorting.QuickSortConcur[...]({0xc00018e000, 0x64, 0x64}, 0xc000189f00)
+	/Users/denishrunov/Programming/go/dsa-go/sorting/quick_sort.go:23 +0x78
+github.com/dkhrunov/dsa-go/sorting.BenchmarkQuickSort.func2(0xc0001326c0)
+	/Users/denishrunov/Programming/go/dsa-go/sorting/quick_sort_benchmark_test.go:28 +0x50
+testing.(*B).runN(0xc0001326c0, 0x1)
+	/usr/local/go/src/testing/benchmark.go:193 +0x102
+testing.(*B).run1.func1()
+	/usr/local/go/src/testing/benchmark.go:233 +0x59
+created by testing.(*B).run1
+	/usr/local/go/src/testing/benchmark.go:226 +0x9c
+exit status 2
+FAIL	github.com/dkhrunov/dsa-go/sorting	2.034s
+FAIL
