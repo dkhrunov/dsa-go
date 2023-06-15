@@ -21,10 +21,10 @@ func LinearSearch[T comparable](arr []T, elem T) int {
 //
 // Documentation - https://www.geeksforgeeks.org/linear-search/
 func LinearSearchRecursive[T comparable](arr []T, elem T) int {
-	return linearSearchRecursiveUtil(arr, elem, len(arr))
+	return linearSearchRecursive(arr, elem, len(arr))
 }
 
-func linearSearchRecursiveUtil[T comparable](arr []T, elem T, size int) int {
+func linearSearchRecursive[T comparable](arr []T, elem T, size int) int {
 	if size == 0 {
 		return -1
 	}
@@ -33,5 +33,5 @@ func linearSearchRecursiveUtil[T comparable](arr []T, elem T, size int) int {
 		return size - 1
 	}
 
-	return linearSearchRecursiveUtil(arr, elem, size-1)
+	return linearSearchRecursive(arr, elem, size-1)
 }

@@ -33,10 +33,10 @@ func BinarySearch[T constraints.Ordered](arr []T, item T) int {
 //
 // Documentation - https://www.geeksforgeeks.org/binary-search/
 func BinarySearchRecursive[T constraints.Ordered](arr []T, item T) int {
-	return binarySearchRecursiveUtil(arr, item, 0, len(arr)-1)
+	return binarySearchRecursive(arr, item, 0, len(arr)-1)
 }
 
-func binarySearchRecursiveUtil[T constraints.Ordered](arr []T, item T, left int, right int) int {
+func binarySearchRecursive[T constraints.Ordered](arr []T, item T, left int, right int) int {
 	if len(arr) == 0 {
 		return -1
 	}
@@ -49,10 +49,10 @@ func binarySearchRecursiveUtil[T constraints.Ordered](arr []T, item T, left int,
 		}
 
 		if arr[mid] > item {
-			return binarySearchRecursiveUtil(arr, item, left, mid-1)
+			return binarySearchRecursive(arr, item, left, mid-1)
 		}
 
-		return binarySearchRecursiveUtil(arr, item, mid+1, right)
+		return binarySearchRecursive(arr, item, mid+1, right)
 	}
 
 	return -1
