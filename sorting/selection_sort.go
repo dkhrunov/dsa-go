@@ -10,7 +10,7 @@ import (
 // Auxiliary Space: O(1)
 //
 // Documentation - https://www.geeksforgeeks.org/selection-sort/
-func SelectionSort[T constraints.Ordered](arr []T, comp utils.ComparatorFn[T]) []T {
+func SelectionSort[T constraints.Ordered](arr []T, comp utils.ComparatorFn[T]) {
 	for i := 0; i < len(arr)-1; i++ {
 		foundIdx := i
 
@@ -23,19 +23,18 @@ func SelectionSort[T constraints.Ordered](arr []T, comp utils.ComparatorFn[T]) [
 		arr[i], arr[foundIdx] = arr[foundIdx], arr[i]
 	}
 
-	return arr
 }
 
 // Time Complexity: O(N^2)
 //
 // Auxiliary Space: O(1)
-func SelectionSortAsc[T constraints.Ordered](arr []T) []T {
-	return SelectionSort(arr, utils.LessComparator[T])
+func SelectionSortAsc[T constraints.Ordered](arr []T) {
+	SelectionSort(arr, utils.LessComparator[T])
 }
 
 // Time Complexity: O(N^2)
 //
 // Auxiliary Space: O(1)
-func SelectionSortDesc[T constraints.Ordered](arr []T) []T {
-	return SelectionSort(arr, utils.GreaterComparator[T])
+func SelectionSortDesc[T constraints.Ordered](arr []T) {
+	SelectionSort(arr, utils.GreaterComparator[T])
 }

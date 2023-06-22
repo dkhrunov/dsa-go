@@ -10,7 +10,7 @@ import (
 // Auxiliary Space: O(1)
 //
 // Documentation - https://www.geeksforgeeks.org/selection-sort/
-func BubbleSort[T constraints.Ordered](arr []T, comp utils.ComparatorFn[T]) []T {
+func BubbleSort[T constraints.Ordered](arr []T, comp utils.ComparatorFn[T]) {
 	swapped := true
 	for i := 0; i < len(arr)-1 && swapped; i++ {
 		swapped = false
@@ -21,20 +21,18 @@ func BubbleSort[T constraints.Ordered](arr []T, comp utils.ComparatorFn[T]) []T 
 			}
 		}
 	}
-
-	return arr
 }
 
 // Time Complexity: O(N^2)
 //
 // Auxiliary Space: O(1)
-func BubbleSortAsc[T constraints.Ordered](arr []T) []T {
-	return BubbleSort(arr, utils.LessComparator[T])
+func BubbleSortAsc[T constraints.Ordered](arr []T) {
+	BubbleSort(arr, utils.LessComparator[T])
 }
 
 // Time Complexity: O(N^2)
 //
 // Auxiliary Space: O(1)
-func BubbleSortDesc[T constraints.Ordered](arr []T) []T {
-	return BubbleSort(arr, utils.GreaterComparator[T])
+func BubbleSortDesc[T constraints.Ordered](arr []T) {
+	BubbleSort(arr, utils.GreaterComparator[T])
 }

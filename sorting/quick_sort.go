@@ -5,9 +5,13 @@ import (
 	"golang.org/x/exp/constraints"
 )
 
-func QuickSort[T constraints.Ordered](arr []T, comp utils.ComparatorFn[T]) []T {
+// Time Complexity: O(N^2)
+//
+// Auxiliary Space: O(log n)
+//
+// Documentation - https://www.geeksforgeeks.org/quick-sort/
+func QuickSort[T constraints.Ordered](arr []T, comp utils.ComparatorFn[T]) {
 	quickSort(arr, 0, len(arr)-1, comp)
-	return arr
 }
 
 func quickSort[T constraints.Ordered](arr []T, left, right int, comp utils.ComparatorFn[T]) {
@@ -18,13 +22,18 @@ func quickSort[T constraints.Ordered](arr []T, left, right int, comp utils.Compa
 	}
 }
 
-func QuickSortConcur[T constraints.Ordered](arr []T, comp utils.ComparatorFn[T]) []T {
+// Time Complexity: O(N^2)
+//
+// Auxiliary Space: O(log n)
+func QuickSortConcur[T constraints.Ordered](arr []T, comp utils.ComparatorFn[T]) {
 	done := make(chan struct{})
 	go quickSortConcur(arr, 0, len(arr)-1, comp, done, 5)
 	<-done
-	return arr
 }
 
+// Time Complexity: O(N^2)
+//
+// Auxiliary Space: O(log n)
 func quickSortConcur[T constraints.Ordered](arr []T, left, right int, comp utils.ComparatorFn[T], done chan struct{}, depth int) {
 	if left >= right {
 		done <- struct{}{}
@@ -62,4 +71,32 @@ func partition[T constraints.Ordered](arr []T, left, right int, comp utils.Compa
 	arr[cursor+1], arr[right] = arr[right], arr[cursor+1]
 
 	return cursor + 1
+}
+
+// Time Complexity: O(N^2)
+//
+// Auxiliary Space: O(log n)
+func QuickSortAsc[T constraints.Ordered](arr []T) {
+	QuickSort(arr, utils.LessComparator[T])
+}
+
+// Time Complexity: O(N^2)
+//
+// Auxiliary Space: O(log n)
+func QuickSortDesc[T constraints.Ordered](arr []T) {
+	QuickSort(arr, utils.GreaterComparator[T])
+}
+
+// Time Complexity: O(N^2)
+//
+// Auxiliary Space: O(log n)
+func QuickSortConcurAsc[T constraints.Ordered](arr []T) {
+	QuickSort(arr, utils.LessComparator[T])
+}
+
+// Time Complexity: O(N^2)
+//
+// Auxiliary Space: O(log n)
+func QuickSortConcurDesc[T constraints.Ordered](arr []T) {
+	QuickSort(arr, utils.GreaterComparator[T])
 }
