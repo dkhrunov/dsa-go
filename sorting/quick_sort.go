@@ -1,6 +1,8 @@
 package sorting
 
 import (
+	"sync"
+
 	"github.com/dkhrunov/dsa-go/utils"
 	"golang.org/x/exp/constraints"
 )
@@ -14,61 +16,69 @@ func QuickSort[T constraints.Ordered](arr []T, comp utils.ComparatorFn[T]) {
 	quickSort(arr, 0, len(arr)-1, comp)
 }
 
-func quickSort[T constraints.Ordered](arr []T, left, right int, comp utils.ComparatorFn[T]) {
-	if left < right {
-		pivotIdx := partition(arr, left, right, comp)
-		quickSort(arr, left, pivotIdx-1, comp)
-		quickSort(arr, pivotIdx+1, right, comp)
+func quickSort[T constraints.Ordered](arr []T, lowerIdx, upperIdx int, comp utils.ComparatorFn[T]) {
+	if lowerIdx < upperIdx {
+		pivotIdx := partition(arr, lowerIdx, upperIdx, comp)
+		quickSort(arr, lowerIdx, pivotIdx-1, comp)
+		quickSort(arr, pivotIdx+1, upperIdx, comp)
 	}
 }
 
+// TODO: not worked
+//
 // Time Complexity: O(N^2)
 //
 // Auxiliary Space: O(log n)
-func QuickSortConcur[T constraints.Ordered](arr []T, comp utils.ComparatorFn[T]) {
-	done := make(chan struct{})
-	go quickSortConcur(arr, 0, len(arr)-1, comp, done, 5)
-	<-done
+func QuickSortParallel[T constraints.Ordered](arr []T, comp utils.ComparatorFn[T]) {
+	quickSortParallel(arr, 0, len(arr)-1, comp)
 }
 
+// TODO: not worked
+//
 // Time Complexity: O(N^2)
 //
 // Auxiliary Space: O(log n)
-func quickSortConcur[T constraints.Ordered](arr []T, left, right int, comp utils.ComparatorFn[T], done chan struct{}, depth int) {
-	if left >= right {
-		done <- struct{}{}
+func quickSortParallel[T constraints.Ordered](arr []T, lowerIdx, upperIdx int, comp utils.ComparatorFn[T]) {
+	if lowerIdx >= upperIdx {
 		return
 	}
 
-	depth--
+	// 2048
+	threshold := 1 << 11
+	sliceLen := upperIdx - lowerIdx
 
-	pivotIdx := partition(arr, left, right, comp)
+	if sliceLen <= threshold { // Sequential
+		quickSort(arr, lowerIdx, upperIdx, comp)
+	} else { // Parallel
+		pivotIdx := partition(arr, lowerIdx, upperIdx, comp)
 
-	if depth > 0 {
-		childDone := make(chan struct{}, 2)
-		go quickSortConcur(arr, left, pivotIdx-1, comp, childDone, depth)
-		go quickSortConcur(arr, pivotIdx+1, right, comp, childDone, depth)
+		var wg sync.WaitGroup
+		wg.Add(2)
 
-		<-childDone
-		<-childDone
-	} else {
-		quickSort(arr, left, pivotIdx-1, comp)
-		quickSort(arr, pivotIdx+1, right, comp)
+		go func() {
+			defer wg.Done()
+			quickSortParallel(arr, lowerIdx, pivotIdx-1, comp)
+		}()
+
+		go func() {
+			defer wg.Done()
+			quickSortParallel(arr, pivotIdx+1, upperIdx, comp)
+		}()
+
+		wg.Wait()
 	}
-
-	done <- struct{}{}
 }
 
-func partition[T constraints.Ordered](arr []T, left, right int, comp utils.ComparatorFn[T]) int {
-	pivot, cursor := arr[right], left-1
-	for i := left; i < right; i++ {
+func partition[T constraints.Ordered](arr []T, lowerIdx, upperIdx int, comp utils.ComparatorFn[T]) int {
+	pivot, cursor := arr[upperIdx], lowerIdx-1
+	for i := lowerIdx; i < upperIdx; i++ {
 		if c := comp(arr[i], pivot); c == 0 || c == 1 {
 			cursor++
 			arr[cursor], arr[i] = arr[i], arr[cursor]
 		}
 	}
 
-	arr[cursor+1], arr[right] = arr[right], arr[cursor+1]
+	arr[cursor+1], arr[upperIdx] = arr[upperIdx], arr[cursor+1]
 
 	return cursor + 1
 }
@@ -90,13 +100,13 @@ func QuickSortDesc[T constraints.Ordered](arr []T) {
 // Time Complexity: O(N^2)
 //
 // Auxiliary Space: O(log n)
-func QuickSortConcurAsc[T constraints.Ordered](arr []T) {
+func QuickSortParallelAsc[T constraints.Ordered](arr []T) {
 	QuickSort(arr, utils.LessComparator[T])
 }
 
 // Time Complexity: O(N^2)
 //
 // Auxiliary Space: O(log n)
-func QuickSortConcurDesc[T constraints.Ordered](arr []T) {
+func QuickSortParallelDesc[T constraints.Ordered](arr []T) {
 	QuickSort(arr, utils.GreaterComparator[T])
 }

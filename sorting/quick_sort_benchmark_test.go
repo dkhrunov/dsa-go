@@ -13,7 +13,7 @@ import (
 func BenchmarkQuickSort(b *testing.B) {
 	runtime.GOMAXPROCS(4)
 	rand.Seed(time.Now().Unix())
-	lengths := []int{10000}
+	lengths := []int{5000}
 	for _, l := range lengths {
 		array := rand.Perm(l)
 
@@ -23,9 +23,9 @@ func BenchmarkQuickSort(b *testing.B) {
 			}
 		})
 
-		b.Run(fmt.Sprintf("QuickSortConcur-%d", l), func(b *testing.B) {
+		b.Run(fmt.Sprintf("QuickSortParallel-%d", l), func(b *testing.B) {
 			for i := 0; i < b.N; i++ {
-				QuickSortConcur(array, utils.LessComparator[int])
+				QuickSortParallel(array, utils.LessComparator[int])
 			}
 		})
 	}

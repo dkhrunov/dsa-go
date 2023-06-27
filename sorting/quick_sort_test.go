@@ -46,7 +46,7 @@ func TestQuickSort(t *testing.T) {
 	}
 }
 
-func TestQuickSortConcur(t *testing.T) {
+func TestQuickSortParallel(t *testing.T) {
 	type args struct {
 		arr  []int
 		comp utils.ComparatorFn[int]
@@ -76,10 +76,10 @@ func TestQuickSortConcur(t *testing.T) {
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 
-			QuickSortConcur(tt.args.arr, tt.args.comp)
+			QuickSortParallel(tt.args.arr, tt.args.comp)
 
 			if !reflect.DeepEqual(tt.args.arr, tt.want) {
-				t.Errorf("QuickSortConcur() = %v, want %v", tt.args.arr, tt.want)
+				t.Errorf("QuickSortParallel() = %v, want %v", tt.args.arr, tt.want)
 			}
 		})
 	}
@@ -107,22 +107,22 @@ func TestQuickSortDesc(t *testing.T) {
 	}
 }
 
-func TestQuickSortConcurAsc(t *testing.T) {
+func TestQuickSortParallelAsc(t *testing.T) {
 	arr := []int{4, 5, 2, 3, 8, 9, 7, 6, 1, 0}
 	want := []int{0, 1, 2, 3, 4, 5, 6, 7, 8, 9}
 
-	QuickSortConcurAsc(arr)
+	QuickSortParallelAsc(arr)
 
 	if !reflect.DeepEqual(arr, want) {
 		t.Errorf("Result was incorrect, got: %v, want: %v.", arr, want)
 	}
 }
 
-func TestQuickSortConcurDesc(t *testing.T) {
+func TestQuickSortParallelDesc(t *testing.T) {
 	arr := []int{4, 5, 2, 3, 8, 9, 7, 6, 1, 0}
 	want := []int{9, 8, 7, 6, 5, 4, 3, 2, 1, 0}
 
-	QuickSortConcurDesc(arr)
+	QuickSortParallelDesc(arr)
 
 	if !reflect.DeepEqual(arr, want) {
 		t.Errorf("Result was incorrect, got: %v, want: %v.", arr, want)

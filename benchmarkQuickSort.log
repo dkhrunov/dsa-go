@@ -36,9 +36,9 @@ created by testing.(*B).run1
 	/usr/local/go/src/testing/benchmark.go:226 +0x9c
 
 goroutine 9 [chan send]:
-github.com/dkhrunov/dsa-go/sorting.quickSortConcur[...]({0xc00018e000, 0x64?, 0x64}, 0x0, 0x63, 0x1138d48, 0x103a0b8)
+github.com/dkhrunov/dsa-go/sorting.quickSortParallel[...]({0xc00018e000, 0x64?, 0x64}, 0x0, 0x63, 0x1138d48, 0x103a0b8)
 	/Users/denishrunov/Programming/go/dsa-go/sorting/quick_sort.go:42 +0x235
-github.com/dkhrunov/dsa-go/sorting.QuickSortConcur[...]({0xc00018e000, 0x64, 0x64}, 0xc000189f00)
+github.com/dkhrunov/dsa-go/sorting.QuickSortParallel[...]({0xc00018e000, 0x64, 0x64}, 0xc000189f00)
 	/Users/denishrunov/Programming/go/dsa-go/sorting/quick_sort.go:23 +0x78
 github.com/dkhrunov/dsa-go/sorting.BenchmarkQuickSort.func2(0xc0001326c0)
 	/Users/denishrunov/Programming/go/dsa-go/sorting/quick_sort_benchmark_test.go:28 +0x50
