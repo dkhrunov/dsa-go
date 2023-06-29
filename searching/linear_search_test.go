@@ -2,9 +2,7 @@ package searching
 
 import (
 	"fmt"
-	"math/rand"
 	"testing"
-	"time"
 )
 
 type lsInputs struct {
@@ -54,24 +52,5 @@ func TestLinearSearchRecursive(t *testing.T) {
 				t.Errorf("got %d, want %d", ans, tt.want)
 			}
 		})
-	}
-}
-
-var benchmarkLSSlice = rand.Perm(10000)
-
-func BenchmarkLinearSearch(b *testing.B) {
-	rand.Seed(time.Now().Unix())
-	b.ResetTimer()
-	for i := 0; i < b.N; i++ {
-		LinearSearch(benchmarkLSSlice, 1)
-	}
-}
-
-func BenchmarkLinearSearchRecursive(b *testing.B) {
-	rand.Seed(time.Now().Unix())
-	b.ResetTimer()
-	for i := 0; i < b.N; i++ {
-		search := rand.Intn(10000)
-		LinearSearchRecursive(benchmarkLSSlice, search)
 	}
 }

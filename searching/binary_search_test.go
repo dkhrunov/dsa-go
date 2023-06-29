@@ -1,10 +1,7 @@
 package searching
 
 import (
-	"math/rand"
-	"sort"
 	"testing"
-	"time"
 )
 
 func TestBinarySearch(t *testing.T) {
@@ -36,6 +33,7 @@ func TestBinarySearch(t *testing.T) {
 		})
 	}
 }
+
 func TestBinarySearchRecursive(t *testing.T) {
 	type args struct {
 		arr  []int
@@ -61,17 +59,5 @@ func TestBinarySearchRecursive(t *testing.T) {
 				t.Errorf("got %d, want %d", ans, tt.want)
 			}
 		})
-	}
-}
-
-var benchmarkBSarr = rand.Perm(10000)
-
-func BenchmarkBinarySearch(b *testing.B) {
-	rand.Seed(time.Now().Unix())
-	sort.Ints(benchmarkBSarr)
-	b.ResetTimer()
-	for i := 0; i < b.N; i++ {
-		search := rand.Intn(10000)
-		BinarySearch(benchmarkBSarr, search)
 	}
 }

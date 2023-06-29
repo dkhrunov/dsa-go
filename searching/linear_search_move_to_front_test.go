@@ -1,9 +1,7 @@
 package searching
 
 import (
-	"math/rand"
 	"testing"
-	"time"
 )
 
 func TestLinearSearchMoveToFront(t *testing.T) {
@@ -29,25 +27,5 @@ func TestLinearSearchMoveToFrontNotFound(t *testing.T) {
 
 	if result != want {
 		t.Fatalf(`LinearSearchMoveToFront(%v, %v) = %v, want match for %v`, arr, find, result, want)
-	}
-}
-
-var benchmarkLSTFarr = rand.Perm(10000)
-
-func BenchmarkLinearSearchToFront(b *testing.B) {
-	rand.Seed(time.Now().Unix())
-	b.ResetTimer()
-	for i := 0; i < b.N; i++ {
-		search := rand.Intn(10000)
-		LinearSearchMoveToFront(benchmarkLSTFarr, search)
-	}
-}
-
-func BenchmarkLinearSearchToFrontWithSameValueMultipleTimes(b *testing.B) {
-	rand.Seed(time.Now().Unix())
-	search := rand.Intn(10000)
-	b.ResetTimer()
-	for i := 0; i < b.N; i++ {
-		LinearSearchMoveToFront(benchmarkLSTFarr, search)
 	}
 }
