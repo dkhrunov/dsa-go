@@ -31,7 +31,12 @@ func (h *Heap[T]) Insert(v T) {
 		h.arr = append(h.arr, v)
 	} else {
 		h.arr = append(h.arr, v)
-		h.heapifyUp(h.Size() - 1)
+
+		for i := h.Size()/2 - 1; i >= 0; i-- {
+			h.heapify(i)
+		}
+		// OR
+		// h.heapifyUp(h.Size() - 1)
 	}
 }
 
@@ -52,7 +57,11 @@ func (h *Heap[T]) Delete(v T) {
 		h.arr[foundIdx], h.arr[h.Size()-1] = h.arr[h.Size()-1], h.arr[foundIdx]
 		h.arr = h.arr[:h.Size()-1]
 		if h.Size() > 0 {
-			h.heapifyDown(0)
+			for i := h.Size()/2 - 1; i >= 0; i-- {
+				h.heapify(i)
+			}
+			// OR
+			// h.heapifyDown(0)
 		}
 	}
 }
@@ -65,36 +74,36 @@ func (h *Heap[T]) Size() int {
 	return len(h.arr)
 }
 
-func (h *Heap[T]) heapifyUp(childIdx int) {
-	parentIdx := (childIdx - 1) / 2
+// func (h *Heap[T]) heapifyUp(childIdx int) {
+// 	parentIdx := (childIdx - 1) / 2
 
-	if childIdx < h.Size() && parentIdx >= 0 {
-		if compare := h.comp(h.arr[childIdx], h.arr[parentIdx]); compare == 1 {
-			h.arr[childIdx], h.arr[parentIdx] = h.arr[parentIdx], h.arr[childIdx]
-			h.heapifyUp(parentIdx)
-		}
-	}
-}
+// 	if childIdx < h.Size() && parentIdx >= 0 {
+// 		if compare := h.comp(h.arr[childIdx], h.arr[parentIdx]); compare == 1 {
+// 			h.arr[childIdx], h.arr[parentIdx] = h.arr[parentIdx], h.arr[childIdx]
+// 			h.heapifyUp(parentIdx)
+// 		}
+// 	}
+// }
 
-func (h *Heap[T]) heapifyDown(parentIdx int) {
-	currentIdx := parentIdx
+func (h *Heap[T]) heapify(parentIdx int) {
+	swapIdx := parentIdx
 	leftChildIdx := 2*parentIdx + 1
 	rightChildIdx := 2*parentIdx + 2
 
 	if leftChildIdx < h.Size() {
-		if compare := h.comp(h.arr[leftChildIdx], h.arr[currentIdx]); compare == 1 {
-			currentIdx = leftChildIdx
+		if compare := h.comp(h.arr[leftChildIdx], h.arr[swapIdx]); compare == 1 {
+			swapIdx = leftChildIdx
 		}
 	}
 
 	if rightChildIdx < h.Size() {
-		if compare := h.comp(h.arr[rightChildIdx], h.arr[currentIdx]); compare == 1 {
-			currentIdx = rightChildIdx
+		if compare := h.comp(h.arr[rightChildIdx], h.arr[swapIdx]); compare == 1 {
+			swapIdx = rightChildIdx
 		}
 	}
 
-	if currentIdx != parentIdx {
-		h.arr[parentIdx], h.arr[currentIdx] = h.arr[currentIdx], h.arr[parentIdx]
-		h.heapifyDown(currentIdx)
+	if swapIdx != parentIdx {
+		h.arr[parentIdx], h.arr[swapIdx] = h.arr[swapIdx], h.arr[parentIdx]
+		h.heapify(swapIdx)
 	}
 }
