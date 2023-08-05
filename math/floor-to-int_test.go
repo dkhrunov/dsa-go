@@ -16,11 +16,11 @@ func TestFloorInt(t *testing.T) {
 		want int
 	}
 	tests := []test[float64]{
-		{"", args[float64]{5.59}, 5},
-		{"", args[float64]{5.999}, 5},
-		{"", args[float64]{3.0}, 3},
-		{"", args[float64]{3.0001}, 3},
-		{"", args[float64]{3.2}, 3},
+		{"Should convert floor64 to int type", args[float64]{5.59}, 5},
+		{"Should convert floor64 to int type", args[float64]{5.999}, 5},
+		{"Should convert floor64 to int type", args[float64]{3.0}, 3},
+		{"Should convert floor64 to int type", args[float64]{3.0001}, 3},
+		{"Should convert floor64 to int type", args[float64]{3.2}, 3},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {

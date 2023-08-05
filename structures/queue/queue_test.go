@@ -5,9 +5,9 @@ import (
 	"testing"
 )
 
-func TestNewQueue(t *testing.T) {
+func TestNew(t *testing.T) {
 	if got := New(); got == nil {
-		t.Errorf("NewQueue() can't create new queue struct")
+		t.Errorf("New() can't create new queue struct")
 	}
 }
 

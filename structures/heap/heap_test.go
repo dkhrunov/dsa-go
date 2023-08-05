@@ -3,7 +3,15 @@ package heap
 import (
 	"reflect"
 	"testing"
+
+	"github.com/dkhrunov/dsa-go/utils"
 )
+
+func TestNew(t *testing.T) {
+	if got := New(utils.GreaterComparator[int]); got == nil {
+		t.Errorf("New() can't create new heap struct")
+	}
+}
 
 func TestMaxHeap(t *testing.T) {
 	input := []int{2, 7, 26, 25, 19, 17, 1, 90, 3, 36}
