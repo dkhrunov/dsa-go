@@ -621,7 +621,7 @@ func TestLeftMostNode(t *testing.T) {
 		t.Run(tt.name, func(t *testing.T) {
 			t.Parallel()
 			if got := LeftMostNode(tt.args.node); !reflect.DeepEqual(got, tt.want) {
-				t.Errorf("leftMostNode(...args) = %v, want %v", got, tt.want)
+				t.Errorf("lLeftMostNode(...args) = %v, want %v", got, tt.want)
 			}
 		})
 	}
@@ -647,7 +647,31 @@ func TestRightMostNode(t *testing.T) {
 		t.Run(tt.name, func(t *testing.T) {
 			t.Parallel()
 			if got := RightMostNode(tt.args.node); !reflect.DeepEqual(got, tt.want) {
-				t.Errorf("rightMostNode(...args) = %v, want %v", got, tt.want)
+				t.Errorf("RightMostNode(...args) = %v, want %v", got, tt.want)
+			}
+		})
+	}
+}
+
+func TestMaxDepth(t *testing.T) {
+	t.Parallel()
+	type args struct {
+		node *BinaryNode[int]
+	}
+	tests := []struct {
+		name string
+		args args
+		want int
+	}{
+		{"should get max depth = 4", args{newFullBinaryTree(t)}, 4},
+		{"should get zero for nil root", args{nil}, 0},
+	}
+	for _, tt := range tests {
+		tt := tt
+		t.Run(tt.name, func(t *testing.T) {
+			t.Parallel()
+			if got := MaxDepth(tt.args.node); !reflect.DeepEqual(got, tt.want) {
+				t.Errorf("MaxDepth(...args) = %v, want %v", got, tt.want)
 			}
 		})
 	}

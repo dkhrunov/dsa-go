@@ -171,6 +171,19 @@ func (n *BinaryNode[T]) SubtreeOf(root *BinaryNode[T]) bool {
 	return IsSubtree(root, n)
 }
 
+// MaxDepth gets the maximum depth of the node.
+//
+// --------------------------------------------------
+//
+// Complexity:
+//
+// Time complexity: O(n).
+//
+// Space complexity: O(n).
+func (n *BinaryNode[T]) MaxDepth() int {
+	return MaxDepth(n)
+}
+
 // InsertAfter inserts 'new' node after passed 'node' in the first argument.
 //
 // --------------------------------------------------
@@ -585,6 +598,30 @@ func RightMostNode[T any](node *BinaryNode[T]) *BinaryNode[T] {
 		node = node.right
 	}
 	return node
+}
+
+// MaxDepth gets the maximum depth of the node.
+//
+// --------------------------------------------------
+//
+// Complexity:
+//
+// Time complexity: O(n).
+//
+// Space complexity: O(n).
+func MaxDepth[T any](node *BinaryNode[T]) int {
+	if node == nil {
+		return 0
+	}
+
+	lDepth := MaxDepth(node.left)
+	rDepth := MaxDepth(node.right)
+
+	if lDepth > rDepth {
+		return lDepth + 1
+	} else {
+		return rDepth + 1
+	}
 }
 
 // GetRoot gets the root of the binary tree for the given node.
