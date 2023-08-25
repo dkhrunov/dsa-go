@@ -1,4 +1,4 @@
-package binarytree
+package tree
 
 import (
 	"fmt"
@@ -16,43 +16,44 @@ const (
 )
 
 // Binary tree node.
-type Tree[T any] struct {
+type BinaryNode[T any] struct {
 	value               T
-	left, right, parent *Tree[T]
+	left, right, parent *BinaryNode[T]
 }
 
-// Creates a new binary tree.
-func New[T any](v T) *Tree[T] {
-	return &Tree[T]{v, nil, nil, nil}
+// TODO использовать данную структуру для BT вместе BTNode
+type BinaryTree[T any] struct {
+	size int
+	root *BinaryNode[T]
 }
 
-// Gets the value of the tree node.
-func (t *Tree[T]) Value() T {
-	return t.value
+// NewBinaryTree creates a new binary tree.
+func NewBinaryTree[T any](value T) *BinaryNode[T] {
+	return &BinaryNode[T]{value, nil, nil, nil}
 }
 
-// Sets the tree node to a new value.
-func (t *Tree[T]) SetValue(v T) {
-	t.value = v
+// Value return the value of the tree node.
+func (n *BinaryNode[T]) Value() T {
+	return n.value
 }
 
-// Gets the left child of a tree node.
-func (t *Tree[T]) Left() *Tree[T] {
-	if t == nil {
+// Left return the left child of a tree node.
+func (n *BinaryNode[T]) Left() *BinaryNode[T] {
+	if n == nil {
 		return nil
 	}
-	return t.left
+	return n.left
 }
 
-// Gets the right child of a tree node.
-func (t *Tree[T]) Right() *Tree[T] {
-	if t == nil {
+// Right return the right child of a tree node.
+func (n *BinaryNode[T]) Right() *BinaryNode[T] {
+	if n == nil {
 		return nil
 	}
-	return t.right
+	return n.right
 }
 
-// Insert 'n' node after current node.
+// InsertAfter inserts 'n' node after current node.
 //
 // --------------------------------------------------
 //
@@ -61,11 +62,11 @@ func (t *Tree[T]) Right() *Tree[T] {
 // Time complexity: O(h), where the 'h' is height of tree.
 //
 // Space complexity: O(1).
-func (t *Tree[T]) InsertAfter(n *Tree[T]) {
-	InsertAfter(t, n)
+func (n *BinaryNode[T]) InsertAfter(node *BinaryNode[T]) {
+	InsertAfter(n, node)
 }
 
-// Insert 'new' node before passed 'node' in the first argument.
+// InsertBefore inserts 'new' node before passed 'node' in the first argument.
 //
 // --------------------------------------------------
 //
@@ -74,11 +75,11 @@ func (t *Tree[T]) InsertAfter(n *Tree[T]) {
 // Time complexity: O(h), where the 'h' is height of tree.
 //
 // Space complexity: O(1).
-func (t *Tree[T]) InsertBefore(n *Tree[T]) {
-	InsertBefore(t, n)
+func (n *BinaryNode[T]) InsertBefore(node *BinaryNode[T]) {
+	InsertBefore(n, node)
 }
 
-// Delete the current node from the binary tree.
+// Delete removes the current node from the binary tree.
 // --------------------------------------------------
 //
 // Complexity:
@@ -86,11 +87,11 @@ func (t *Tree[T]) InsertBefore(n *Tree[T]) {
 // Time complexity: O(h), where the 'h' is height of tree.
 //
 // Space complexity: O(1).
-func (t *Tree[T]) Delete() {
-	Delete(t)
+func (n *BinaryNode[T]) Delete() {
+	Delete(n)
 }
 
-// Preorder traversal of binary tree.
+// TraversePreorder traverses in preorder of traversal of a binary tree.
 //
 // DFS (Deep First Search) algorithm.
 //
@@ -102,11 +103,11 @@ func (t *Tree[T]) Delete() {
 //
 // Space complexity: O(h), where 'h' is the height of tree, if we do consider the stack size for function calls.
 // Otherwise, the space complexity of inorder traversal is O(1).
-func (t *Tree[T]) TraversePreorder(callback func(t *Tree[T]), empty func()) {
-	TraversePreorder(t, callback, empty)
+func (n *BinaryNode[T]) TraversePreorder(callback func(node *BinaryNode[T]), empty func()) {
+	TraversePreorder(n, callback, empty)
 }
 
-// Inorder traversal of binary tree.
+// TraverseInorder traverses in inorder traversal of traversal of a binary tree.
 //
 // DFS (Deep First Search) algorithm.
 //
@@ -118,11 +119,11 @@ func (t *Tree[T]) TraversePreorder(callback func(t *Tree[T]), empty func()) {
 //
 // Space complexity: O(h), where 'h' is the height of tree, if we do consider the stack size for function calls.
 // Otherwise, the space complexity of inorder traversal is O(1).
-func (t *Tree[T]) TraverseInorder(callback func(t *Tree[T]), empty func()) {
-	TraverseInorder(t, callback, empty)
+func (n *BinaryNode[T]) TraverseInorder(callback func(node *BinaryNode[T]), empty func()) {
+	TraverseInorder(n, callback, empty)
 }
 
-// Postorder traversal of binary tree.
+// TraversePostorder traverses in postorder traversal of traversal of a binary tree.
 //
 // DFS (Deep First Search) algorithm.
 //
@@ -134,11 +135,11 @@ func (t *Tree[T]) TraverseInorder(callback func(t *Tree[T]), empty func()) {
 //
 // Space complexity: O(h), where 'h' is the height of tree, if we do consider the stack size for function calls.
 // Otherwise, the space complexity of inorder traversal is O(1).
-func (t *Tree[T]) TraversePostorder(callback func(t *Tree[T]), empty func()) {
-	TraverseInorder(t, callback, empty)
+func (n *BinaryNode[T]) TraversePostorder(callback func(node *BinaryNode[T]), empty func()) {
+	TraverseInorder(n, callback, empty)
 }
 
-// Levelorder traversal of binary tree.
+// TraverseLevelorder traverses in levelorder traversal of traversal of a binary tree.
 //
 // BFS (Breadth First Search) algorithm.
 //
@@ -149,11 +150,11 @@ func (t *Tree[T]) TraversePostorder(callback func(t *Tree[T]), empty func()) {
 // Time complexity: O(n).
 //
 // Space complexity: O(n).
-func (t *Tree[T]) TraverseLevelorder(callback func(t *Tree[T]), empty func()) {
-	TraverseLevelorder(t, callback, empty)
+func (n *BinaryNode[T]) TraverseLevelorder(callback func(node *BinaryNode[T]), empty func()) {
+	TraverseLevelorder(n, callback, empty)
 }
 
-// Checks that s is a subtree of r.
+// SubtreeOf checks that s is a subtree of r.
 //
 // --------------------------------------------------
 //
@@ -166,11 +167,11 @@ func (t *Tree[T]) TraverseLevelorder(callback func(t *Tree[T]), empty func()) {
 // This is because of the recursive calls in the serialize() function.
 // The maximum depth of the recursive calls will be O(n) for 'root' and O(m) for 's'.
 // So, the total space complexity is O(n+m)
-func (t *Tree[T]) SubtreeOf(root *Tree[T]) bool {
-	return IsSubtree(root, t)
+func (n *BinaryNode[T]) SubtreeOf(root *BinaryNode[T]) bool {
+	return IsSubtree(root, n)
 }
 
-// Insert 'new' node after passed 'node' in the first argument.
+// InsertAfter inserts 'new' node after passed 'node' in the first argument.
 //
 // --------------------------------------------------
 //
@@ -179,7 +180,7 @@ func (t *Tree[T]) SubtreeOf(root *Tree[T]) bool {
 // Time complexity: O(h), where the 'h' is height of tree.
 //
 // Space complexity: O(1).
-func InsertAfter[T any](node, new *Tree[T]) {
+func InsertAfter[T any](node, new *BinaryNode[T]) {
 	if node.right == nil {
 		node.right = new
 		new.parent = node
@@ -190,7 +191,7 @@ func InsertAfter[T any](node, new *Tree[T]) {
 	}
 }
 
-// Insert 'new' node before passed 'node' in the first argument.
+// InsertBefore inserts 'new' node before passed 'node' in the first argument.
 //
 // --------------------------------------------------
 //
@@ -199,7 +200,7 @@ func InsertAfter[T any](node, new *Tree[T]) {
 // Time complexity: O(h), where the 'h' is height of tree.
 //
 // Space complexity: O(1).
-func InsertBefore[T any](node, new *Tree[T]) {
+func InsertBefore[T any](node, new *BinaryNode[T]) {
 	if node.left == nil {
 		node.left = new
 		new.parent = node
@@ -210,7 +211,7 @@ func InsertBefore[T any](node, new *Tree[T]) {
 	}
 }
 
-// Delete given node from the binary tree.
+// Delete removes given node from the binary tree.
 // --------------------------------------------------
 //
 // Complexity:
@@ -218,7 +219,7 @@ func InsertBefore[T any](node, new *Tree[T]) {
 // Time complexity: O(h), where the 'h' is height of tree.
 //
 // Space complexity: O(1).
-func Delete[T any](node *Tree[T]) {
+func Delete[T any](node *BinaryNode[T]) {
 	// [Base case] is leaf
 	if node.left == nil && node.right == nil {
 		parent := node.parent
@@ -240,7 +241,7 @@ func Delete[T any](node *Tree[T]) {
 	Delete(predecessor)
 }
 
-// Preorder traversal of binary tree.
+// TraversePreorder traverses in preorder of traversal of a binary tree.
 //
 // DFS (Deep First Search) algorithm.
 //
@@ -252,7 +253,7 @@ func Delete[T any](node *Tree[T]) {
 //
 // Space complexity: O(h), where 'h' is the height of tree, if we do consider the stack size for function calls.
 // Otherwise, the space complexity of inorder traversal is O(1).
-func TraversePreorder[T any](root *Tree[T], callback func(t *Tree[T]), empty func()) {
+func TraversePreorder[T any](root *BinaryNode[T], callback func(t *BinaryNode[T]), empty func()) {
 	if root == nil {
 		empty()
 		return
@@ -262,7 +263,7 @@ func TraversePreorder[T any](root *Tree[T], callback func(t *Tree[T]), empty fun
 	TraversePreorder(root.right, callback, empty)
 }
 
-// Inorder traversal of binary tree.
+// TraverseInorder traverses in inorder traversal of traversal of a binary tree.
 //
 // DFS (Deep First Search) algorithm.
 //
@@ -274,7 +275,7 @@ func TraversePreorder[T any](root *Tree[T], callback func(t *Tree[T]), empty fun
 //
 // Space complexity: O(h), where 'h' is the height of tree, if we do consider the stack size for function calls.
 // Otherwise, the space complexity of inorder traversal is O(1).
-func TraverseInorder[T any](root *Tree[T], callback func(t *Tree[T]), empty func()) {
+func TraverseInorder[T any](root *BinaryNode[T], callback func(t *BinaryNode[T]), empty func()) {
 	if root == nil {
 		empty()
 		return
@@ -284,7 +285,7 @@ func TraverseInorder[T any](root *Tree[T], callback func(t *Tree[T]), empty func
 	TraverseInorder(root.right, callback, empty)
 }
 
-// Inorder traversal of binary tree.
+// TraverseInorder traverses in inorder traversal of traversal of a binary tree.
 //
 // DFS (Deep First Search) algorithm.
 //
@@ -295,8 +296,8 @@ func TraverseInorder[T any](root *Tree[T], callback func(t *Tree[T]), empty func
 // Time complexity: O(n*h), where 'n' is the number of nodes in the binary tree and 'h' is the height of tree and.
 //
 // Space complexity: O(h), where 'h' is the height of tree, since all left nodes are pushed onto the stack and then processed in turn.
-func TraverseInorderI[T any](root *Tree[T], callback func(t *Tree[T]), empty func()) {
-	stack := stack.New[*Tree[T]]()
+func TraverseInorderI[T any](root *BinaryNode[T], callback func(t *BinaryNode[T]), empty func()) {
+	stack := stack.New[*BinaryNode[T]]()
 	curr := root
 	for curr != nil || stack.Len() > 0 {
 		for curr != nil {
@@ -311,7 +312,7 @@ func TraverseInorderI[T any](root *Tree[T], callback func(t *Tree[T]), empty fun
 	empty()
 }
 
-// Postorder traversal of binary tree.
+// TraversePostorder traverses in postorder traversal of traversal of a binary tree.
 //
 // DFS (Deep First Search) algorithm.
 //
@@ -323,7 +324,7 @@ func TraverseInorderI[T any](root *Tree[T], callback func(t *Tree[T]), empty fun
 //
 // Space complexity: O(h), where 'h' is the height of tree, if we do consider the stack size for function calls.
 // Otherwise, the space complexity of inorder traversal is O(1).
-func TraversePostorder[T any](root *Tree[T], callback func(t *Tree[T]), empty func()) {
+func TraversePostorder[T any](root *BinaryNode[T], callback func(t *BinaryNode[T]), empty func()) {
 	if root == nil {
 		empty()
 		return
@@ -333,7 +334,7 @@ func TraversePostorder[T any](root *Tree[T], callback func(t *Tree[T]), empty fu
 	callback(root)
 }
 
-// Levelorder traversal of binary tree.
+// TraverseLevelorder traverses in levelorder traversal of traversal of a binary tree.
 //
 // BFS (Breadth First Search) algorithm.
 //
@@ -344,12 +345,12 @@ func TraversePostorder[T any](root *Tree[T], callback func(t *Tree[T]), empty fu
 // Time complexity: O(n).
 //
 // Space complexity: O(n).
-func TraverseLevelorder[T any](root *Tree[T], callback func(t *Tree[T]), empty func()) {
+func TraverseLevelorder[T any](root *BinaryNode[T], callback func(t *BinaryNode[T]), empty func()) {
 	queue := queue.New()
 	queue.EnQueue(root)
 
 	for queue.Len() > 0 {
-		curr := queue.DeQueue().(*Tree[T])
+		curr := queue.DeQueue().(*BinaryNode[T])
 		callback(curr)
 
 		if curr.left != nil {
@@ -365,7 +366,7 @@ func TraverseLevelorder[T any](root *Tree[T], callback func(t *Tree[T]), empty f
 	}
 }
 
-// Gets the node is the next node in Inorder traversal of the Binary Tree.
+// InorderSuccessor gets the node is the next node in Inorder traversal of the Binary Tree.
 //
 // --------------------------------------------------
 //
@@ -374,7 +375,7 @@ func TraverseLevelorder[T any](root *Tree[T], callback func(t *Tree[T]), empty f
 // Time complexity: O(h), where h is the height of the tree.
 //
 // Space complexity: O(1).
-func InorderSuccessor[T any](n *Tree[T]) *Tree[T] {
+func InorderSuccessor[T any](n *BinaryNode[T]) *BinaryNode[T] {
 	if n == nil {
 		return nil
 	}
@@ -391,7 +392,7 @@ func InorderSuccessor[T any](n *Tree[T]) *Tree[T] {
 	return p
 }
 
-// Gets the node is the next node in Inorder traversal of the Binary Tree.
+// InorderSuccessorR gets the node is the next node in Inorder traversal of the Binary Tree.
 //
 // Recursive and without parent pointer version of the InorderSuccessor.
 //
@@ -402,15 +403,15 @@ func InorderSuccessor[T any](n *Tree[T]) *Tree[T] {
 // Time complexity: O(n), where 'n' is the number of nodes in the binary tree.
 //
 // Space complexity: O(n), where 'n' is the number of nodes in the binary tree.
-func InorderSuccessorR[T any](root, target *Tree[T]) *Tree[T] {
+func InorderSuccessorR[T any](root, target *BinaryNode[T]) *BinaryNode[T] {
 	var (
-		prev           *Tree[T]
-		succ           *Tree[T]
-		reverseInorder func(root *Tree[T])
+		prev           *BinaryNode[T]
+		succ           *BinaryNode[T]
+		reverseInorder func(root *BinaryNode[T])
 	)
 
 	// reverse inorder traversal
-	reverseInorder = func(root *Tree[T]) {
+	reverseInorder = func(root *BinaryNode[T]) {
 		if root == nil {
 			return
 		}
@@ -434,7 +435,7 @@ func InorderSuccessorR[T any](root, target *Tree[T]) *Tree[T] {
 	return succ
 }
 
-// Gets the node is the next node in Inorder traversal of the Binary Tree.
+// InorderSuccessorI gets the node is the next node in Inorder traversal of the Binary Tree.
 //
 // Iterative and without parent pointer vesrion of the InorderSuccessor.
 //
@@ -445,7 +446,7 @@ func InorderSuccessorR[T any](root, target *Tree[T]) *Tree[T] {
 // Time complexity: O(n*h), where 'n' is the number of nodes in the binary tree and 'h' is the height of tree and.
 //
 // Space complexity: O(h), where 'h' is the height of tree, since all left nodes are pushed onto the stack and then processed in turn.
-func InorderSuccessorI[T any](root, target *Tree[T]) *Tree[T] {
+func InorderSuccessorI[T any](root, target *BinaryNode[T]) *BinaryNode[T] {
 	if target.right != nil {
 		return LeftMostNode(target.right)
 	}
@@ -455,8 +456,8 @@ func InorderSuccessorI[T any](root, target *Tree[T]) *Tree[T] {
 	}
 
 	var (
-		stack stack.Stack[*Tree[T]]
-		succ  *Tree[T]
+		stack stack.Stack[*BinaryNode[T]]
+		succ  *BinaryNode[T]
 		found bool
 	)
 
@@ -480,7 +481,7 @@ func InorderSuccessorI[T any](root, target *Tree[T]) *Tree[T] {
 	return succ
 }
 
-// Gets the node is the prev node in Inorder traversal of the Binary Tree.
+// InorderPredecessor gets the node is the prev node in Inorder traversal of the Binary Tree.
 //
 // --------------------------------------------------
 //
@@ -489,24 +490,24 @@ func InorderSuccessorI[T any](root, target *Tree[T]) *Tree[T] {
 // Time complexity: O(h), where h is the height of the tree.
 //
 // Space complexity: O(1).
-func InorderPredecessor[T any](n *Tree[T]) *Tree[T] {
-	if n == nil {
+func InorderPredecessor[T any](node *BinaryNode[T]) *BinaryNode[T] {
+	if node == nil {
 		return nil
 	}
 
-	if n.left != nil {
-		return RightMostNode(n.left)
+	if node.left != nil {
+		return RightMostNode(node.left)
 	}
 
-	p := n.parent
-	for p != nil && reflect.DeepEqual(n, p.left) {
-		n = p
+	p := node.parent
+	for p != nil && reflect.DeepEqual(node, p.left) {
+		node = p
 		p = p.parent
 	}
 	return p
 }
 
-// Checks that two root of binary tree are identical.
+// IsIdentical checks that two root of binary tree are identical.
 //
 // Two trees ‘x’ and ‘y’ are identical if:
 //
@@ -524,7 +525,7 @@ func InorderPredecessor[T any](n *Tree[T]) *Tree[T] {
 //
 // Space complexity: O(h) - The recursive solution has O(h) memory complexity
 // as it will consume memory on the stack up to the height of binary tree h.
-func IsIdentical[T any](x, y *Tree[T]) bool {
+func IsIdentical[T any](x, y *BinaryNode[T]) bool {
 	if x == nil || y == nil {
 		return x == nil && y == nil
 	}
@@ -535,7 +536,7 @@ func IsIdentical[T any](x, y *Tree[T]) bool {
 		reflect.DeepEqual(x.parent, y.parent)
 }
 
-// Checks that subRoot is a subtree of root.
+// IsSubtree checks that subRoot is a subtree of root.
 //
 // --------------------------------------------------
 //
@@ -546,7 +547,7 @@ func IsIdentical[T any](x, y *Tree[T]) bool {
 // Space complexity: O(n+m) - This is because of the recursive calls in the serialize() function.
 // The maximum depth of the recursive calls will be O(n) for 'root' and O(m) for 'subRoot'.
 // So, the total space complexity is O(n+m).
-func IsSubtree[T any](root, subRoot *Tree[T]) bool {
+func IsSubtree[T any](root, subRoot *BinaryNode[T]) bool {
 	if root == nil || subRoot == nil {
 		return root == nil && subRoot == nil
 	}
@@ -554,7 +555,7 @@ func IsSubtree[T any](root, subRoot *Tree[T]) bool {
 	return strings.Contains(Serialize(root), Serialize(subRoot))
 }
 
-// Get the left most node of the tree.
+// LeftMostNode gets the left most node of the tree.
 //
 // --------------------------------------------------
 //
@@ -563,14 +564,14 @@ func IsSubtree[T any](root, subRoot *Tree[T]) bool {
 // Time complexity: O(h), where the 'h' is height of tree.
 //
 // Space complexity: O(1).
-func LeftMostNode[T any](node *Tree[T]) *Tree[T] {
+func LeftMostNode[T any](node *BinaryNode[T]) *BinaryNode[T] {
 	for node != nil && node.left != nil {
 		node = node.left
 	}
 	return node
 }
 
-// Get the right most node of the tree.
+// RightMostNode gets the right most node of the tree.
 //
 // --------------------------------------------------
 //
@@ -579,14 +580,14 @@ func LeftMostNode[T any](node *Tree[T]) *Tree[T] {
 // Time complexity: O(h), where the 'h' is height of tree.
 //
 // Space complexity: O(1).
-func RightMostNode[T any](node *Tree[T]) *Tree[T] {
+func RightMostNode[T any](node *BinaryNode[T]) *BinaryNode[T] {
 	for node != nil && node.right != nil {
 		node = node.right
 	}
 	return node
 }
 
-// Get the root of the binary tree for the given node.
+// GetRoot gets the root of the binary tree for the given node.
 //
 // --------------------------------------------------
 //
@@ -595,7 +596,7 @@ func RightMostNode[T any](node *Tree[T]) *Tree[T] {
 // Time complexity: O(h), where the 'h' is height of tree.
 //
 // Space complexity: O(1).
-func GetRoot[T any](node *Tree[T]) *Tree[T] {
+func GetRoot[T any](node *BinaryNode[T]) *BinaryNode[T] {
 	if node == nil {
 		return nil
 	}
@@ -605,7 +606,7 @@ func GetRoot[T any](node *Tree[T]) *Tree[T] {
 	return node
 }
 
-// Serialize binary tree.
+// Serialize serializes binary tree.
 // The function Serialize() is similar to the preorder traversal of the tree.
 //
 // Special characters "^" and "#":
@@ -621,12 +622,12 @@ func GetRoot[T any](node *Tree[T]) *Tree[T] {
 //
 // Space complexity: O(h), where 'h' is the height of tree, if we do consider the stack size for function calls.
 // Otherwise, the space complexity of inorder traversal is O(1).
-func Serialize[T any](root *Tree[T]) string {
+func Serialize[T any](root *BinaryNode[T]) string {
 	var sb strings.Builder
 
 	TraversePreorder(
 		root,
-		func(t *Tree[T]) {
+		func(t *BinaryNode[T]) {
 			sb.WriteString(SerializationStart)
 			sb.WriteString(fmt.Sprintf("%v", t.value))
 			sb.WriteString(SerializationDelimiter)
@@ -640,7 +641,7 @@ func Serialize[T any](root *Tree[T]) string {
 	return sb.String()
 }
 
-// Deserialize the serialized binary tree string and create a binary tree from the passed string.
+// Deserialize deserializes the serialized before binary tree string and create a binary tree from the passed string.
 //
 // --------------------------------------------------
 //
@@ -651,17 +652,17 @@ func Serialize[T any](root *Tree[T]) string {
 //
 // Space complexity: O(h), where 'h' is the height of tree, if we do consider the stack size for function calls.
 // Otherwise, the space complexity of inorder traversal is O(1).
-func Deserialize(str string) *Tree[string] {
-	var dfs func(parent *Tree[string]) *Tree[string]
+func Deserialize(str string) *BinaryNode[string] {
+	var dfs func(parent *BinaryNode[string]) *BinaryNode[string]
 
 	tokens := strings.Split(str, SerializationDelimiter)
-	dfs = func(parent *Tree[string]) *Tree[string] {
+	dfs = func(parent *BinaryNode[string]) *BinaryNode[string] {
 		token := strings.TrimPrefix(tokens[0], SerializationStart)
 		tokens = tokens[1:]
 		if token == SerializationEnd {
 			return nil
 		}
-		node := &Tree[string]{
+		node := &BinaryNode[string]{
 			value:  token,
 			parent: parent,
 		}
