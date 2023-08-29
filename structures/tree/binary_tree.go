@@ -22,10 +22,10 @@ type BinaryNode[T any] struct {
 }
 
 // TODO использовать данную структуру для BT вместе BTNode
-type BinaryTree[T any] struct {
-	size int
-	root *BinaryNode[T]
-}
+// type BinaryTree[T any] struct {
+// 	size int
+// 	root *BinaryNode[T]
+// }
 
 // NewBinaryTree creates a new binary tree.
 func NewBinaryTree[T any](value T) *BinaryNode[T] {
