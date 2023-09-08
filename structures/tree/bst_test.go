@@ -27,7 +27,7 @@ func TestBSTRoot(t *testing.T) {
 
 	t.Run("should return nil root of BST", func(t *testing.T) {
 		t.Parallel()
-		bst := &BST[int]{}
+		bst := &BSTree[int]{}
 		require.Zero(t, bst.Root())
 	})
 }
@@ -43,7 +43,7 @@ func TestBSTSize(t *testing.T) {
 
 	t.Run("should return zero size of BST", func(t *testing.T) {
 		t.Parallel()
-		bst := &BST[int]{}
+		bst := &BSTree[int]{}
 		require.Zero(t, bst.Size())
 	})
 }
@@ -118,9 +118,9 @@ func TestBSTInsert(t *testing.T) {
 		bst := createBST(t)
 		sizeBefore := bst.Size()
 		bst.Insert(8)
-		require.Empty(t, searchRec(bst.root.left, 8))
-		require.Empty(t, searchRec(bst.root.right, 8))
-		require.NotEmpty(t, searchRec(bst.root, 8))
+		require.Empty(t, bst.search(bst.root.left, 8))
+		require.Empty(t, bst.search(bst.root.right, 8))
+		require.NotEmpty(t, bst.search(bst.root, 8))
 		require.Equal(t, bst.Size(), sizeBefore+1)
 	})
 }
@@ -179,9 +179,9 @@ func TestBSTSearch(t *testing.T) {
 	}
 }
 
-func createBST(t *testing.T) *BST[int] {
+func createBST(t *testing.T) *BSTree[int] {
 	t.Helper()
-	bst := &BST[int]{}
+	bst := &BSTree[int]{}
 	bst.root = &BinaryNode[int]{value: 8}
 	bst.root.left = &BinaryNode[int]{value: 3}
 	bst.root.right = &BinaryNode[int]{value: 10}

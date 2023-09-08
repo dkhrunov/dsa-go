@@ -29,7 +29,12 @@ type BinaryNode[T any] struct {
 
 // NewBinaryTree creates a new binary tree.
 func NewBinaryTree[T any](value T) *BinaryNode[T] {
-	return &BinaryNode[T]{value, nil, nil, nil}
+	return &BinaryNode[T]{
+		value:  value,
+		left:   nil,
+		right:  nil,
+		parent: nil,
+	}
 }
 
 // Value return the value of the tree node.

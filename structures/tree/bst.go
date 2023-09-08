@@ -4,23 +4,23 @@ import (
 	"golang.org/x/exp/constraints"
 )
 
-type BST[T constraints.Ordered] struct {
+type BSTree[T constraints.Ordered] struct {
 	size int
 	root *BinaryNode[T]
 }
 
-// Creates a new binary search tree.
-func NewBST[T constraints.Ordered]() *BST[T] {
-	return &BST[T]{size: 0, root: nil}
+// NewBST creates a new binary search tree.
+func NewBST[T constraints.Ordered]() BSTree[T] {
+	return BSTree[T]{size: 0, root: nil}
 }
 
-// Gets the size of the BST.
-func (tree *BST[T]) Size() int {
+// Size returns the size of the BST.
+func (tree *BSTree[T]) Size() int {
 	return tree.size
 }
 
-// Gets the root of the BST.
-func (tree *BST[T]) Root() *BinaryNode[T] {
+// Root returns the root of the BST.
+func (tree *BSTree[T]) Root() *BinaryNode[T] {
 	return tree.root
 }
 
@@ -30,10 +30,10 @@ func (tree *BST[T]) Root() *BinaryNode[T] {
 //
 // Complexity:
 //
-// Time complexity: O(h), where the 'h' is height of tree.
+// Time complexity: O(n).
 //
 // Space complexity: O(1).
-func (tree *BST[T]) Min() T {
+func (tree *BSTree[T]) Min() T {
 	return LeftMostNode(tree.root).value
 }
 
@@ -43,10 +43,10 @@ func (tree *BST[T]) Min() T {
 //
 // Complexity:
 //
-// Time complexity: O(h), where the 'h' is height of tree.
+// Time complexity: O(n).
 //
 // Space complexity: O(1).
-func (tree *BST[T]) Max() T {
+func (tree *BSTree[T]) Max() T {
 	return RightMostNode(tree.root).value
 }
 
@@ -56,63 +56,29 @@ func (tree *BST[T]) Max() T {
 //
 // Complexity:
 //
-// Time complexity: O(log n).
+// Time complexity: O(n).
 //
 // Space complexity: O(h), where 'h' is the height of tree, if we do consider the stack size for function calls.
 // Otherwise, the space complexity of inorder traversal is O(1).
-func (tree *BST[T]) Insert(value T) {
-	tree.root = insertRec(tree.root, value)
+func (tree *BSTree[T]) Insert(value T) {
+	tree.root = tree.insert(tree.root, value)
 	tree.size++
 }
 
-// Delete removes value from BST.
-//
-// --------------------------------------------------
-//
-// Complexity:
-//
-// Time complexity: O(log n).
-//
-// Space complexity: O(h), where 'h' is the height of tree, if we do consider the stack size for function calls.
-// Otherwise, the space complexity of inorder traversal is O(1).
-func (tree *BST[T]) Delete(value T) {
-	deleteRec(tree.root, value)
-	tree.size--
-}
-
-// Search search given value in BST.
-//
-// --------------------------------------------------
-//
-// Complexity:
-//
-// Time complexity: O(log n).
-//
-// Space complexity: O(h), where 'h' is the height of tree, if we do consider the stack size for function calls.
-// Otherwise, the space complexity of inorder traversal is O(1).
-func (tree *BST[T]) Search(value T) *BinaryNode[T] {
-	return searchRec(tree.root, value)
-}
-
-// Insert inserts a new value to BST.
-//
-// --------------------------------------------------
-//
-// Complexity:
-//
-// Time complexity: O(log n).
-//
-// Space complexity: O(h), where 'h' is the height of tree, if we do consider the stack size for function calls.
-// Otherwise, the space complexity of inorder traversal is O(1).
-func insertRec[T constraints.Ordered](root *BinaryNode[T], value T) *BinaryNode[T] {
+func (tree *BSTree[T]) insert(root *BinaryNode[T], value T) *BinaryNode[T] {
 	if root == nil {
-		return &BinaryNode[T]{value, nil, nil, nil}
+		return &BinaryNode[T]{
+			value:  value,
+			left:   nil,
+			right:  nil,
+			parent: nil,
+		}
 	}
 
 	if value < root.value {
-		root.left = insertRec(root.left, value)
+		root.left = tree.insert(root.left, value)
 	} else if value > root.value {
-		root.right = insertRec(root.right, value)
+		root.right = tree.insert(root.right, value)
 	}
 
 	return root
@@ -124,19 +90,24 @@ func insertRec[T constraints.Ordered](root *BinaryNode[T], value T) *BinaryNode[
 //
 // Complexity:
 //
-// Time complexity: O(log n).
+// Time complexity: O(n).
 //
 // Space complexity: O(h), where 'h' is the height of tree, if we do consider the stack size for function calls.
 // Otherwise, the space complexity of inorder traversal is O(1).
-func deleteRec[T constraints.Ordered](root *BinaryNode[T], value T) *BinaryNode[T] {
+func (tree *BSTree[T]) Delete(value T) {
+	tree.delete(tree.root, value)
+	tree.size--
+}
+
+func (tree *BSTree[T]) delete(root *BinaryNode[T], value T) *BinaryNode[T] {
 	if root == nil {
 		return nil
 	}
 
 	if value < root.value {
-		root.left = deleteRec(root.left, value)
+		root.left = tree.delete(root.left, value)
 	} else if value > root.value {
-		root.right = deleteRec(root.right, value)
+		root.right = tree.delete(root.right, value)
 	} else {
 		if root.left == nil {
 			return root.right
@@ -146,7 +117,7 @@ func deleteRec[T constraints.Ordered](root *BinaryNode[T], value T) *BinaryNode[
 		}
 
 		root.value = LeftMostNode(root.right).value
-		root.right = deleteRec(root.right, root.value)
+		root.right = tree.delete(root.right, root.value)
 	}
 
 	return root
@@ -158,19 +129,23 @@ func deleteRec[T constraints.Ordered](root *BinaryNode[T], value T) *BinaryNode[
 //
 // Complexity:
 //
-// Time complexity: O(log n).
+// Time complexity: O(n).
 //
 // Space complexity: O(h), where 'h' is the height of tree, if we do consider the stack size for function calls.
 // Otherwise, the space complexity of inorder traversal is O(1).
-func searchRec[T constraints.Ordered](root *BinaryNode[T], value T) *BinaryNode[T] {
+func (tree *BSTree[T]) Search(value T) *BinaryNode[T] {
+	return tree.search(tree.root, value)
+}
+
+func (tree *BSTree[T]) search(root *BinaryNode[T], value T) *BinaryNode[T] {
 	if root == nil {
 		return nil
 	}
 
 	if value < root.value {
-		return searchRec(root.left, value)
+		return tree.search(root.left, value)
 	} else if value > root.value {
-		return searchRec(root.right, value)
+		return tree.search(root.right, value)
 	}
 
 	return root
