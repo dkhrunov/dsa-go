@@ -1,7 +1,7 @@
 package searching
 
 import (
-	myMath "github.com/dkhrunov/dsa-go/math"
+	"github.com/dkhrunov/dsa-go/gmath"
 	"golang.org/x/exp/constraints"
 )
 
@@ -22,7 +22,7 @@ func ExponentialSearch[T constraints.Ordered](arr []T, item T) int {
 	}
 
 	from := i / 2
-	end := myMath.Min(i, len(arr)-1)
+	end := gmath.Min(i, len(arr)-1)
 
 	// Auxiliary Space: O(Log N)
 	// return BinarySearchRecursive(arr, from, end, item)
