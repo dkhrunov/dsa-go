@@ -37,12 +37,12 @@ func NewBinaryTree[T any](value T) *BinaryNode[T] {
 	}
 }
 
-// Value return the value of the tree node.
+// Value return the value of node.
 func (n *BinaryNode[T]) Value() T {
 	return n.value
 }
 
-// Left return the left child of a tree node.
+// Left return the left child of node.
 func (n *BinaryNode[T]) Left() *BinaryNode[T] {
 	if n == nil {
 		return nil
@@ -50,12 +50,20 @@ func (n *BinaryNode[T]) Left() *BinaryNode[T] {
 	return n.left
 }
 
-// Right return the right child of a tree node.
+// Right return the right child of node.
 func (n *BinaryNode[T]) Right() *BinaryNode[T] {
 	if n == nil {
 		return nil
 	}
 	return n.right
+}
+
+// Parent return the parent of node.
+func (n *BinaryNode[T]) Parent() *BinaryNode[T] {
+	if n == nil {
+		return nil
+	}
+	return n.parent
 }
 
 // InsertAfter inserts 'n' node after current node.
@@ -665,6 +673,10 @@ func GetRoot[T any](node *BinaryNode[T]) *BinaryNode[T] {
 // Space complexity: O(h), where 'h' is the height of tree, if we do consider the stack size for function calls.
 // Otherwise, the space complexity of inorder traversal is O(1).
 func Serialize[T any](root *BinaryNode[T]) string {
+	if root == nil {
+		return ""
+	}
+
 	var sb strings.Builder
 
 	TraversePreorder(
@@ -695,6 +707,10 @@ func Serialize[T any](root *BinaryNode[T]) string {
 // Space complexity: O(h), where 'h' is the height of tree, if we do consider the stack size for function calls.
 // Otherwise, the space complexity of inorder traversal is O(1).
 func Deserialize(str string) *BinaryNode[string] {
+	if len(str) == 0 {
+		return &BinaryNode[string]{}
+	}
+
 	var dfs func(parent *BinaryNode[string]) *BinaryNode[string]
 
 	tokens := strings.Split(str, SerializationDelimiter)

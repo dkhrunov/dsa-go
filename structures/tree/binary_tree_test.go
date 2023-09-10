@@ -720,6 +720,7 @@ func TestSerialize(t *testing.T) {
 		{"Serialize of degenerate binary tree", args{newDegenerateBinaryTree(t)}, serializedDegenerateBinaryTree},
 		{"Serialize of left-skewed binary tree", args{newLeftSkewedBinaryTree(t)}, serializedLeftSkewedBinaryTree},
 		{"Serialize of right-skewed binary tree", args{newRightSkewedBinaryTree(t)}, serializedRightSkewedBinaryTree},
+		{"Serialize of empty tree", args{nil}, ""},
 	}
 	for _, tt := range tests {
 		tt := tt
@@ -749,6 +750,7 @@ func TestDeserialize(t *testing.T) {
 		{"Deserialize of degenerate binary tree", args{serializedDegenerateBinaryTree}, newDegenerateBinaryTreeS(t)},
 		{"Deserialize of left-skewed binary tree", args{serializedLeftSkewedBinaryTree}, newLeftSkewedBinaryTreeS(t)},
 		{"Deserialize of right-skewed binary tree", args{serializedRightSkewedBinaryTree}, newRightSkewedBinaryTreeS(t)},
+		{"Deserialize of empty string", args{""}, &BinaryNode[string]{}},
 	}
 	for _, tt := range tests {
 		tt := tt
