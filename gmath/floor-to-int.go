@@ -6,10 +6,6 @@ import (
 	"golang.org/x/exp/constraints"
 )
 
-type numbers interface {
-	constraints.Integer | constraints.Float
-}
-
-func FloorInt[T numbers](val T) int {
+func FloorInt[T constraints.Integer | constraints.Float](val T) int {
 	return int(math.Floor(float64(val)))
 }
