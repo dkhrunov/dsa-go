@@ -13,7 +13,22 @@ func TestNewBST(t *testing.T) {
 	require.NotNil(t, bst)
 	require.Zero(t, bst.root)
 	require.Zero(t, bst.size)
+}
 
+func TestBSTSize(t *testing.T) {
+	t.Parallel()
+
+	t.Run("should return size of BST", func(t *testing.T) {
+		t.Parallel()
+		bst := createBST(t)
+		require.NotZero(t, bst.Size())
+	})
+
+	t.Run("should return zero size of BST", func(t *testing.T) {
+		t.Parallel()
+		bst := &BSTree[int]{}
+		require.Zero(t, bst.Size())
+	})
 }
 
 func TestBSTRoot(t *testing.T) {
@@ -29,22 +44,6 @@ func TestBSTRoot(t *testing.T) {
 		t.Parallel()
 		bst := &BSTree[int]{}
 		require.Zero(t, bst.Root())
-	})
-}
-
-func TestBSTSize(t *testing.T) {
-	t.Parallel()
-
-	t.Run("should return size of BST", func(t *testing.T) {
-		t.Parallel()
-		bst := createBST(t)
-		require.NotZero(t, bst.Root())
-	})
-
-	t.Run("should return zero size of BST", func(t *testing.T) {
-		t.Parallel()
-		bst := &BSTree[int]{}
-		require.Zero(t, bst.Size())
 	})
 }
 
@@ -88,67 +87,119 @@ func TestBSTMax(t *testing.T) {
 
 func TestBSTInsert(t *testing.T) {
 	t.Parallel()
-	type args struct {
-		value int
-	}
 	tests := []struct {
-		name string
-		args args
-		want func(root *BinaryNode[int]) int
+		name   string
+		insert int
+		want   func(root *BinaryNode[int]) int
+		size   int
 	}{
-		{"should insert node with value 4", args{4}, func(root *BinaryNode[int]) int { return root.Left().Right().Left().value }},
-		{"should insert node with value 2", args{2}, func(root *BinaryNode[int]) int { return root.Left().Left().Right().value }},
-		{"should insert node with value 9", args{9}, func(root *BinaryNode[int]) int { return root.Right().Left().value }},
-		{"should insert node with value 5", args{5}, func(root *BinaryNode[int]) int { return root.Left().Right().Left().value }},
+		{
+			name:   "should insert node with value 4",
+			insert: 4,
+			want:   func(root *BinaryNode[int]) int { return root.Left().Right().Left().value },
+			size:   8,
+		},
+		{
+			name:   "should insert node with value 2",
+			insert: 2,
+			want:   func(root *BinaryNode[int]) int { return root.Left().Left().Right().value },
+			size:   8,
+		},
+		{
+			name:   "should insert node with value 9",
+			insert: 9,
+			want:   func(root *BinaryNode[int]) int { return root.Right().Left().value },
+			size:   8,
+		},
+		{
+			name:   "should insert node with value 5",
+			insert: 5,
+			want:   func(root *BinaryNode[int]) int { return root.Left().Right().Left().value },
+			size:   8,
+		},
 	}
 	for _, tt := range tests {
 		tt := tt
 		t.Run(tt.name, func(t *testing.T) {
 			t.Parallel()
 			bst := createBST(t)
-			sizeBefore := bst.Size()
-			bst.Insert(tt.args.value)
-			require.Equal(t, tt.want(bst.Root()), tt.args.value)
-			require.Equal(t, bst.Size(), sizeBefore+1)
+			require.True(t, bst.Insert(tt.insert))
+			require.Equal(t, tt.want(bst.Root()), tt.insert)
+			require.Equal(t, bst.Size(), tt.size)
 		})
 	}
 
 	t.Run("should not add duplicated node", func(t *testing.T) {
 		t.Parallel()
 		bst := createBST(t)
-		sizeBefore := bst.Size()
-		bst.Insert(8)
-		require.Empty(t, bst.search(bst.root.left, 8))
-		require.Empty(t, bst.search(bst.root.right, 8))
-		require.NotEmpty(t, bst.search(bst.root, 8))
-		require.Equal(t, bst.Size(), sizeBefore+1)
+		require.True(t, bst.Insert(9))
+		require.False(t, bst.Insert(9))
+		require.False(t, bst.Insert(9))
+		require.Equal(t, bst.Size(), 8)
 	})
 }
 
 func TestBSTDelete(t *testing.T) {
 	t.Parallel()
-	type args struct {
-		value int
-	}
+	type TreeFactory func(t *testing.T) *BSTree[int]
 	tests := []struct {
-		name string
-		args args
-		want string
+		name       string
+		treeFc     TreeFactory
+		delete     int
+		serialized string
+		size       int
+		success    bool
 	}{
-		{"should delete leaf node", args{1}, "^8,^3,#,^6,#,^7,#,#,^10,#,^14,#,#,"},
-		{"should delete node with single child node", args{6}, "^8,^3,^1,#,#,^7,#,#,^10,#,^14,#,#,"},
-		{"should delete node with two children", args{3}, "^8,^6,^1,#,#,^7,#,#,^10,#,^14,#,#,"},
-		{"should do nothing with not existing value", args{-999}, "^8,^3,^1,#,#,^6,#,^7,#,#,^10,#,^14,#,#,"},
+		{
+			name:       "should delete leaf node",
+			treeFc:     createBST,
+			delete:     1,
+			serialized: "^8,^3,#,^6,#,^7,#,#,^10,#,^14,#,#,",
+			size:       6,
+			success:    true,
+		},
+		{
+			name:       "should delete node with single child node",
+			treeFc:     createBST,
+			delete:     6,
+			serialized: "^8,^3,^1,#,#,^7,#,#,^10,#,^14,#,#,",
+			size:       6,
+			success:    true,
+		},
+		{
+			name:       "should delete node with two children",
+			treeFc:     createBST,
+			delete:     3,
+			serialized: "^8,^6,^1,#,#,^7,#,#,^10,#,^14,#,#,",
+			size:       6,
+			success:    true,
+		},
+		{
+			name:       "should do nothing with not existing value",
+			treeFc:     createBST,
+			delete:     999,
+			serialized: "^8,^3,^1,#,#,^6,#,^7,#,#,^10,#,^14,#,#,",
+			size:       7,
+			success:    false,
+		},
+		{
+			name:       "should not delete: Where Root is nil",
+			treeFc:     func(t *testing.T) *BSTree[int] { t.Helper(); return NewBST[int]() },
+			delete:     1,
+			serialized: "",
+			size:       0,
+			success:    false,
+		},
 	}
 	for _, tt := range tests {
 		tt := tt
 		t.Run(tt.name, func(t *testing.T) {
 			t.Parallel()
-			bst := createBST(t)
-			sizeBefore := bst.Size()
-			bst.Delete(tt.args.value)
-			require.Equal(t, tt.want, Serialize(bst.Root()))
-			require.Equal(t, bst.Size(), sizeBefore-1)
+			bst := tt.treeFc(t)
+			require.Equal(t, tt.success, bst.Delete(tt.delete))
+			require.Equal(t, tt.size, bst.Size())
+			require.Equal(t, tt.serialized, Serialize(bst.Root()))
+			require.False(t, bst.Contains(tt.delete))
 		})
 	}
 }
@@ -156,25 +207,56 @@ func TestBSTDelete(t *testing.T) {
 func TestBSTSearch(t *testing.T) {
 	t.Parallel()
 	bst := createBST(t)
-	type args struct {
-		value int
-	}
 	tests := []struct {
-		name string
-		args args
-		want *BinaryNode[int]
+		name   string
+		search int
+		want   *BinaryNode[int]
 	}{
-		{"should found value", args{6}, bst.Root().Left().Right()},
-		{"should found smallest value than root", args{1}, bst.Root().Left().Left()},
-		{"should found bigger value than root", args{14}, bst.Root().Right().Right()},
-		{"should not found value", args{-999}, nil},
+		{
+			name:   "should found value",
+			search: 6,
+			want:   bst.Root().Left().Right(),
+		},
+		{
+			name:   "should not found value",
+			search: -999,
+			want:   nil,
+		},
 	}
 	for _, tt := range tests {
 		tt := tt
 		t.Run(tt.name, func(t *testing.T) {
 			t.Parallel()
-			got := bst.Search(tt.args.value)
+			got := bst.Search(tt.search)
 			require.Same(t, tt.want, got)
+		})
+	}
+}
+
+func TestBSTContains(t *testing.T) {
+	t.Parallel()
+	bst := createBST(t)
+	tests := []struct {
+		name  string
+		value int
+		want  bool
+	}{
+		{
+			name:  "Should contain",
+			value: 6,
+			want:  true,
+		},
+		{
+			name:  "Should not contain",
+			value: 999,
+			want:  false,
+		},
+	}
+	for _, tt := range tests {
+		tt := tt
+		t.Run(tt.name, func(t *testing.T) {
+			t.Parallel()
+			require.Equal(t, tt.want, bst.Contains(tt.value))
 		})
 	}
 }
