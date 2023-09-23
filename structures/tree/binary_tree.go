@@ -323,7 +323,7 @@ func TraverseInorder[T any](root *BinaryNode[T], callback func(t *BinaryNode[T])
 //
 // Space complexity: O(h), where 'h' is the height of tree, since all left nodes are pushed onto the stack and then processed in turn.
 func TraverseInorderI[T any](root *BinaryNode[T], callback func(t *BinaryNode[T]), empty func()) {
-	stack := stack.New[*BinaryNode[T]]()
+	stack := stack.NewStack[*BinaryNode[T]]()
 	curr := root
 	for curr != nil || stack.Len() > 0 {
 		for curr != nil {

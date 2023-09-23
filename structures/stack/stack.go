@@ -18,17 +18,17 @@ type (
 	}
 )
 
-// Create a new stack
-func New[T any]() *Stack[T] {
+// NewStack create a new stack
+func NewStack[T any]() *Stack[T] {
 	return &Stack[T]{nil, 0}
 }
 
-// Return the number of items in the stack
+// Len get the number of items in the stack
 func (this *Stack[T]) Len() int {
 	return this.length
 }
 
-// View the top item on the stack
+// Peek views the top item on the stack
 func (this *Stack[T]) Peek() (T, error) {
 	if this.length == 0 {
 		return utils.Zero[T](), errors.New("Stack is empty")
@@ -36,7 +36,7 @@ func (this *Stack[T]) Peek() (T, error) {
 	return this.top.value, nil
 }
 
-// Pop the top item of the stack and return it
+// Pop pop the top item of the stack and return it
 func (this *Stack[T]) Pop() (T, error) {
 	if this.length == 0 {
 		return utils.Zero[T](), errors.New("Stack is empty")
@@ -48,7 +48,7 @@ func (this *Stack[T]) Pop() (T, error) {
 	return n.value, nil
 }
 
-// Push a value onto the top of the stack
+// Push push a value onto the top of the stack
 func (this *Stack[T]) Push(value T) {
 	n := &node[T]{value, this.top}
 	this.top = n
