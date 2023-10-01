@@ -5,6 +5,7 @@ import (
 	"reflect"
 	"strings"
 
+	"github.com/dkhrunov/dsa-go/gmath"
 	"github.com/dkhrunov/dsa-go/structures/queue"
 	"github.com/dkhrunov/dsa-go/structures/stack"
 )
@@ -629,12 +630,7 @@ func MaxDepth[T any](node *BinaryNode[T]) int {
 
 	lDepth := MaxDepth(node.left)
 	rDepth := MaxDepth(node.right)
-
-	if lDepth > rDepth {
-		return lDepth + 1
-	} else {
-		return rDepth + 1
-	}
+	return gmath.Max(lDepth, rDepth) + 1
 }
 
 // GetRoot gets the root of the binary tree for the given node.
