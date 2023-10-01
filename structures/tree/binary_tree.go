@@ -28,6 +28,8 @@ type BinaryNode[T any] struct {
 // 	root *BinaryNode[T]
 // }
 
+// TODO add comparator to constructor and use it in comparisons
+
 // NewBinaryTree creates a new binary tree.
 func NewBinaryTree[T any](value T) *BinaryNode[T] {
 	return &BinaryNode[T]{

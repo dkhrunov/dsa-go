@@ -9,6 +9,8 @@ type BSTree[T constraints.Ordered] struct {
 	root *BinaryNode[T]
 }
 
+// TODO add comparator to constructor and use it in comparisons
+
 // NewBST creates a new binary search tree.
 func NewBST[T constraints.Ordered]() *BSTree[T] {
 	return &BSTree[T]{size: 0, root: nil}

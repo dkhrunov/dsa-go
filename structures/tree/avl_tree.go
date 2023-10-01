@@ -16,6 +16,8 @@ type AVLNode[T constraints.Ordered] struct {
 	left, right, parent *AVLNode[T]
 }
 
+// TODO add comparator to constructor and use it in comparisons
+
 // NewAVLNode creates a new AVL node.
 func NewAVLNode[T constraints.Ordered](value T) *AVLNode[T] {
 	return &AVLNode[T]{
