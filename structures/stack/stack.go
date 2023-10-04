@@ -2,55 +2,45 @@ package stack
 
 import (
 	"errors"
-
-	"github.com/dkhrunov/dsa-go/utils"
 )
 
-// TODO write tests
-type (
-	Stack[T any] struct {
-		top    *node[T]
-		length int
-	}
-	node[T any] struct {
-		value T
-		prev  *node[T]
-	}
+var (
+	ErrStackEmpty    = errors.New("stack empty")
+	ErrStackOverflow = errors.New("stack overflow")
 )
 
-// NewStack create a new stack
-func NewStack[T any]() *Stack[T] {
-	return &Stack[T]{nil, 0}
+type StackType[T any] interface {
+	Peek() (T, error)
+	Pop() (T, error)
+	Push(val T) error
+	Len() int
 }
 
-// Len get the number of items in the stack
-func (this *Stack[T]) Len() int {
-	return this.length
+// TODO write test
+type Stack[T any] struct {
+	t StackType[T]
 }
 
-// Peek views the top item on the stack
-func (this *Stack[T]) Peek() (T, error) {
-	if this.length == 0 {
-		return utils.Zero[T](), errors.New("Stack is empty")
-	}
-	return this.top.value, nil
+func New[T any]() *Stack[T] {
+	return &Stack[T]{newStackList[T]()}
 }
 
-// Pop pop the top item of the stack and return it
-func (this *Stack[T]) Pop() (T, error) {
-	if this.length == 0 {
-		return utils.Zero[T](), errors.New("Stack is empty")
-	}
-
-	n := this.top
-	this.top = n.prev
-	this.length--
-	return n.value, nil
+func NewStatic[T any](size int) *Stack[T] {
+	return &Stack[T]{newStackArray[T](size)}
 }
 
-// Push push a value onto the top of the stack
-func (this *Stack[T]) Push(value T) {
-	n := &node[T]{value, this.top}
-	this.top = n
-	this.length++
+func (s *Stack[T]) Len() int {
+	return s.t.Len()
+}
+
+func (s *Stack[T]) Peek() (T, error) {
+	return s.t.Peek()
+}
+
+func (s *Stack[T]) Pop() (T, error) {
+	return s.t.Pop()
+}
+
+func (s *Stack[T]) Push(val T) error {
+	return s.t.Push(val)
 }

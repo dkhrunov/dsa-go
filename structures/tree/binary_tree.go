@@ -326,7 +326,7 @@ func TraverseInorder[T any](root *BinaryNode[T], callback func(t *BinaryNode[T])
 //
 // Space complexity: O(h), where 'h' is the height of tree, since all left nodes are pushed onto the stack and then processed in turn.
 func TraverseInorderI[T any](root *BinaryNode[T], callback func(t *BinaryNode[T]), empty func()) {
-	stack := stack.NewStack[*BinaryNode[T]]()
+	stack := stack.New[*BinaryNode[T]]()
 	curr := root
 	for curr != nil || stack.Len() > 0 {
 		for curr != nil {
@@ -485,11 +485,11 @@ func InorderSuccessorI[T any](root, target *BinaryNode[T]) *BinaryNode[T] {
 	}
 
 	var (
-		stack stack.Stack[*BinaryNode[T]]
 		succ  *BinaryNode[T]
 		found bool
 	)
 
+	stack := stack.New[*BinaryNode[T]]()
 	curr := root
 	for curr != nil || stack.Len() > 0 {
 		for curr != nil {
