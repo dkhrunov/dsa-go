@@ -1,24 +1,28 @@
 package graph
 
 import (
+	"bytes"
+	"container/list"
 	"fmt"
 	"sync"
 
 	"github.com/dkhrunov/dsa-go/structures/queue"
 )
 
-// Space complexity: O(n^2 + 2n), where n is number of vertices
-type AdjacencyMatrix struct {
+// Space complexity: O(n^2), where n is number of vertices
+type adjMatrix struct {
 	lock         sync.RWMutex
+	v            int
+	e            int
+	undirected   bool
 	vertices     map[string]int
 	verticeNames map[int]string
 	matrix       [][]int8
 }
 
-type AdjacencyMatrixOption func(m *AdjacencyMatrix)
-
-func NewAdjacencyMatrix(opts ...AdjacencyMatrixOption) *AdjacencyMatrix {
-	matrix := &AdjacencyMatrix{
+func newAdjMatrix(opts ...GraphOption) *adjMatrix {
+	matrix := &adjMatrix{
+		undirected:   true,
 		vertices:     make(map[string]int),
 		verticeNames: make(map[int]string),
 		matrix:       make([][]int8, 0),
@@ -31,26 +35,49 @@ func NewAdjacencyMatrix(opts ...AdjacencyMatrixOption) *AdjacencyMatrix {
 	return matrix
 }
 
-func AdjacencyMatrixWithVerticales(vertices []string) AdjacencyMatrixOption {
-	return func(m *AdjacencyMatrix) {
-		for _, vertex := range vertices {
-			m.AddVertex(vertex)
-		}
-	}
+func (m *adjMatrix) setDirected() {
+	m.lock.Lock()
+	defer m.lock.Unlock()
+
+	m.undirected = false
 }
 
-func AdjacencyMatrixWithEdges(edges [][2]string) AdjacencyMatrixOption {
-	return func(m *AdjacencyMatrix) {
-		for _, v := range edges {
-			m.AddEdge(v[0], v[1])
-		}
-	}
+func (m *adjMatrix) IsDirected() bool {
+	m.lock.RLock()
+	defer m.lock.RUnlock()
+
+	return !m.undirected
+}
+
+func (m *adjMatrix) Vertices() int {
+	m.lock.RLock()
+	defer m.lock.RUnlock()
+
+	return m.v
+}
+
+func (m *adjMatrix) Edges() int {
+	m.lock.RLock()
+	defer m.lock.RUnlock()
+
+	return m.e
+}
+
+// Time complexity: O(1)
+//
+// Space complexity: O(1)
+func (m *adjMatrix) HasVertex(vertex string) bool {
+	m.lock.RLock()
+	defer m.lock.RUnlock()
+
+	_, has := m.vertices[vertex]
+	return has
 }
 
 // Time complexity: O(n), where n is number of vertices
 //
 // Space complexity: O(1)
-func (m *AdjacencyMatrix) AddVertex(vertex string) error {
+func (m *adjMatrix) AddVertex(vertex string) error {
 	m.lock.Lock()
 	defer m.lock.Unlock()
 
@@ -58,16 +85,18 @@ func (m *AdjacencyMatrix) AddVertex(vertex string) error {
 		return ErrVertexAlreadyExists(vertex)
 	}
 
-	idx := len(m.vertices)
+	nextIdx := m.v
 	// Add new vertex to maps
-	m.vertices[vertex] = idx
-	m.verticeNames[idx] = vertex
+	m.vertices[vertex] = nextIdx
+	m.verticeNames[nextIdx] = vertex
 	// Add to each row new column
 	for i := range m.matrix {
 		m.matrix[i] = append(m.matrix[i], 0)
 	}
 	// Add new row
-	m.matrix = append(m.matrix, make([]int8, idx+1))
+	m.matrix = append(m.matrix, make([]int8, nextIdx+1))
+
+	m.v++
 
 	return nil
 }
@@ -75,35 +104,37 @@ func (m *AdjacencyMatrix) AddVertex(vertex string) error {
 // Time complexity: O(n^2), where n is number of vertices
 //
 // Space complexity: O(n), where n is number of vertices
-func (m *AdjacencyMatrix) DeleteVertex(vertex string) error {
+func (m *adjMatrix) DeleteVertex(vertex string) error {
 	m.lock.Lock()
 	defer m.lock.Unlock()
 
-	vertexId, ok := m.vertices[vertex]
+	vertexIdx, ok := m.vertices[vertex]
 	if !ok {
 		return ErrVertexNotFound(vertex)
 	}
 
 	// Delete row
-	m.matrix = append(m.matrix[:vertexId], m.matrix[vertexId+1:]...)
-	// Delete col
+	m.matrix = append(m.matrix[:vertexIdx], m.matrix[vertexIdx+1:]...)
+	// Delete column
 	for i := range m.matrix {
-		m.matrix[i] = append(m.matrix[i][:vertexId], m.matrix[i][vertexId+1:]...)
+		m.matrix[i] = append(m.matrix[i][:vertexIdx], m.matrix[i][vertexIdx+1:]...)
 	}
 
-	// Update vertices map
+	// Delete from vertices map
 	delete(m.vertices, vertex)
-	for k, v := range m.vertices {
-		if v > vertexId {
-			m.vertices[k] = v - 1
+	// Delete from verticeNames map
+	delete(m.verticeNames, vertexIdx)
+	for k, idx := range m.vertices {
+		if idx > vertexIdx {
+			idx -= 1
+			// Update vertices map
+			m.vertices[k] = idx
 		}
+		// Update verticeNames map
+		m.verticeNames[idx] = k
 	}
 
-	// Update verticeNames map
-	delete(m.verticeNames, vertexId)
-	for k, v := range m.vertices {
-		m.verticeNames[v] = k
-	}
+	m.v--
 
 	return nil
 }
@@ -111,7 +142,35 @@ func (m *AdjacencyMatrix) DeleteVertex(vertex string) error {
 // Time complexity: O(1)
 //
 // Space complexity: O(1)
-func (m *AdjacencyMatrix) AddEdge(source, target string) error {
+func (m *adjMatrix) HasEdge(source, target string) bool {
+	m.lock.RLock()
+	defer m.lock.RUnlock()
+
+	i, ok := m.vertices[source]
+	if !ok {
+		return false
+	}
+
+	j, ok := m.vertices[target]
+	if !ok {
+		return false
+	}
+
+	if m.undirected {
+		return m.matrix[i][j] == 1 && m.matrix[j][i] == 1
+	} else {
+		return m.matrix[i][j] == 1
+	}
+}
+
+// Time complexity: O(1)
+//
+// Space complexity: O(1)
+func (m *adjMatrix) AddEdge(source, target string) error {
+	if ok := m.HasEdge(source, target); ok {
+		return ErrEdgeAlreadyExists(source, target)
+	}
+
 	m.lock.Lock()
 	defer m.lock.Unlock()
 
@@ -125,12 +184,13 @@ func (m *AdjacencyMatrix) AddEdge(source, target string) error {
 		return ErrVertexNotFound(target)
 	}
 
-	if m.matrix[i][j] == 1 && m.matrix[j][i] == 1 {
-		return ErrEdgeAlreadyExists(source, target)
+	m.matrix[i][j] = 1
+
+	if m.undirected {
+		m.matrix[j][i] = 1
 	}
 
-	m.matrix[i][j] = 1
-	m.matrix[j][i] = 1
+	m.e++
 
 	return nil
 }
@@ -138,7 +198,7 @@ func (m *AdjacencyMatrix) AddEdge(source, target string) error {
 // Time complexity: O(1)
 //
 // Space complexity: O(1)
-func (m *AdjacencyMatrix) DeleteEdge(source, target string) error {
+func (m *adjMatrix) DeleteEdge(source, target string) error {
 	m.lock.Lock()
 	defer m.lock.Unlock()
 
@@ -157,16 +217,24 @@ func (m *AdjacencyMatrix) DeleteEdge(source, target string) error {
 	}
 
 	m.matrix[i][j] = 0
-	m.matrix[j][i] = 0
+
+	if m.undirected {
+		m.matrix[j][i] = 0
+	}
+
+	m.e--
 
 	return nil
 }
 
-// Time complexity: O(n), where n is number of vertices
+// Time complexity: O(n^2), where n is number of vertices
 //
 // Space complexity: O(n), where n is number of vertices
-func (m *AdjacencyMatrix) BFS(start string, callback func(vertex string)) error {
-	visited := make([]bool, len(m.vertices))
+func (m *adjMatrix) BFS(start string, callback func(vertex string)) error {
+	m.lock.RLock()
+	defer m.lock.RUnlock()
+
+	visited := make([]bool, m.v)
 	queue := queue.New()
 
 	i, ok := m.vertices[start]
@@ -186,14 +254,14 @@ func (m *AdjacencyMatrix) BFS(start string, callback func(vertex string)) error 
 			return ErrVertexNotFound(curr)
 		}
 
-		for i := 0; i < len(m.vertices); i++ {
+		for i := 0; i < m.v; i++ {
 			if !visited[i] && m.matrix[currIdx][i] == 1 {
 				vertex, ok := m.verticeNames[i]
 				if !ok {
 					return ErrVertexNotFound("nil")
 				}
-				queue.EnQueue(vertex)
 				visited[i] = true
+				queue.EnQueue(vertex)
 			}
 		}
 	}
@@ -201,54 +269,141 @@ func (m *AdjacencyMatrix) BFS(start string, callback func(vertex string)) error 
 	return nil
 }
 
-// Time complexity: O(n), where n is number of vertices
+// Time complexity: O(v+e), where v is number of vertices, and e is number of edges
 //
-// Space complexity: O(n), where n is number of vertices
-func (m *AdjacencyMatrix) DFS(start string, callback func(vertex string)) error {
-	visited := make([]bool, len(m.vertices))
+// Space complexity: O(v+e), where v is number of vertices, and e is number of edges
+func (m *adjMatrix) DFS(start string, callback func(vertex string)) error {
+	visited := make([]bool, m.Vertices())
+	return m.dfs(start, callback, visited)
+}
 
-	var dfs func(vertex string, callback func(vertex string), visited []bool) error
-	dfs = func(vertex string, callback func(vertex string), visited []bool) error {
-		i, ok := m.vertices[vertex]
-		if !ok {
-			return ErrVertexNotFound(vertex)
-		}
+func (m *adjMatrix) dfs(vertex string, callback func(vertex string), visited []bool) error {
+	m.lock.RLock()
+	defer m.lock.RUnlock()
 
-		visited[i] = true
-		callback(vertex)
-
-		for j := 0; j < len(m.matrix[i]); j++ {
-			if !visited[j] && m.matrix[i][j] == 1 {
-				v, ok := m.verticeNames[j]
-				if !ok {
-					return ErrVertexNotFound("nil")
-				}
-				dfs(v, callback, visited)
-			}
-		}
-
-		return nil
+	i, ok := m.vertices[vertex]
+	if !ok {
+		return ErrVertexNotFound(vertex)
 	}
 
-	return dfs(start, callback, visited)
+	visited[i] = true
+	callback(vertex)
+
+	for j := 0; j < len(m.matrix[i]); j++ {
+		if !visited[j] && m.matrix[i][j] == 1 {
+			v, ok := m.verticeNames[j]
+			if !ok {
+				return ErrVertexNotFound("nil")
+			}
+			m.dfs(v, callback, visited)
+		}
+	}
+
+	return nil
+}
+
+// Time complexity: O(v+e), where v is number of vertices, and e is number of edges
+//
+// Space complexity: O(v), where v is number of vertices
+func (m *adjMatrix) IsCyclic() bool {
+	m.lock.RLock()
+	defer m.lock.RUnlock()
+
+	if m.undirected {
+		panic(ErrCyclicCheckOnlyForDirected)
+	}
+
+	visited := make([]bool, m.Vertices())
+	recStack := make([]bool, m.Vertices())
+
+	for i := range m.matrix {
+		if !visited[i] && m.isCyclicRec(i, visited, recStack) {
+			return true
+		}
+	}
+
+	return false
+}
+
+func (m *adjMatrix) isCyclicRec(i int, visited, recStack []bool) bool {
+	if !visited[i] {
+		// Mark the current node as visited
+		// and part of recursion stack
+		visited[i] = true
+		recStack[i] = true
+
+		for j := range m.matrix[i] {
+			// Check only nodes that has edges
+			if m.matrix[i][j] != 1 {
+				continue
+			}
+
+			if !visited[j] && m.isCyclicRec(j, visited, recStack) {
+				return true
+			} else if recStack[j] {
+				return true
+			}
+		}
+	}
+
+	// Remove the vertex from recursion stack
+	recStack[i] = false
+	return false
+}
+
+func (m *adjMatrix) FindComponents() ([]*list.List, error) {
+	m.lock.RLock()
+	defer m.lock.RUnlock()
+
+	groupId := -1
+	components := make([]*list.List, 0, m.Vertices())
+	visited := make([]bool, m.Vertices())
+
+	grouping := func(vertex string) {
+		if len(components)-1 < groupId {
+			components = append(components, list.New())
+		}
+		components[groupId].PushBack(vertex)
+	}
+
+	for vertex := range m.vertices {
+		i, ok := m.vertices[vertex]
+		if !ok {
+			return nil, ErrVertexNotFound(vertex)
+		}
+
+		if !visited[i] {
+			groupId++
+			if err := m.dfs(vertex, grouping, visited); err != nil {
+				return nil, err
+			}
+		}
+	}
+
+	return components, nil
 }
 
 // Time complexity: O(n^2), where n is number of vertices
 //
 // Space complexity: O(1)
-func (m *AdjacencyMatrix) Print() {
+func (m *adjMatrix) String() string {
+	m.lock.RLock()
+	defer m.lock.RUnlock()
+
 	if len(m.matrix) == 0 {
-		fmt.Print("[]")
-		return
+		return "[]"
 	}
 
-	fmt.Print("   ")
+	var buffer bytes.Buffer
+	buffer.WriteString("   ")
 	for i := range m.matrix {
-		fmt.Printf("%v ", m.verticeNames[i])
+		buffer.WriteString(fmt.Sprintf("%v ", m.verticeNames[i]))
 	}
-	fmt.Println()
+	buffer.WriteString("\n")
 	for i, row := range m.matrix {
-		fmt.Printf("%v ", m.verticeNames[i])
-		fmt.Println(row)
+		buffer.WriteString(fmt.Sprintf("%v ", m.verticeNames[i]))
+		buffer.WriteString(fmt.Sprintf("%v\n", row))
 	}
+
+	return buffer.String()
 }
